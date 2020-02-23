@@ -1,0 +1,46 @@
+{
+    "name": "blossom-playground",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build:reason": "bsb -make-world -clean-world",
+        "watch:reason": "npm run build:reason -- -w",
+        "build:es": "webpack",
+        "watch:es": "watch \"npm run build:es\" ./src",
+        "predeploy": "npm-run-all clean \"build:es -- --mode=production\" build:css",
+        "deploy": "echo \"Not yet implemented - now.sh or surge.sh are supported out of the box\" && exit 1",
+        "clean": "del-cli ./dist",
+        "copy": "npm-run-all --parallel copy:assets copy:index",
+        "copy:assets": "cpy \"./assets/!(css)/**/*.*\" \"./assets/**/[.]*\" ./dist --parents --recursive",
+        "copy:index": "cpy \"./assets/index.html\" ./dist",
+        "prebuild:es": "del-cli dist/assets",
+        "postbuild:es": "npm run copy",
+        "watch:assets": "watch \"npm run copy\" ./assets",
+        "dashboard": "webpack-dashboard -- webpack-dev-server --config ./webpack.config.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "nanoid": "^2.1.11",
+        "re-blossom": "^1.0.2",
+        "re-formality": "^3.2.0",
+        "reason-react": "^0.7.0"
+    },
+    "devDependencies": {
+        "bs-platform": "^7.1.1",
+        "copy-webpack-plugin": "^5.1.1",
+        "cpy-cli": "^3.1.0",
+        "del-cli": "^3.0.0",
+        "npm-run-all": "^4.1.5",
+        "react-hot-loader": "^4.12.19",
+        "terser-webpack-plugin": "^2.3.5",
+        "webpack": "^4.41.6",
+        "webpack-cli": "^3.3.11",
+        "webpack-dashboard": "^3.2.0",
+        "webpack-dev-server": "^3.10.3",
+        "webpack-jarvis": "^0.3.2"
+    }
+}

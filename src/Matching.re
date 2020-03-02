@@ -1,5 +1,4 @@
 open Belt;
-[@bs.module] external nanoid: unit => string = "nanoid";
 
 module Edge = {
   type t = (string, string);
@@ -134,11 +133,10 @@ module MatchForm = {
       field: I,
       strategy: Strategy.OnFirstChange,
       dependents: None,
-      validate: ({i, j, _}) =>
-        if (i == j) {
-          Error("They can't be the same");
-        } else {
-          Ok(Valid);
+      validate: ({i, _}) =>
+        switch (i) {
+        | "" => Error("Pick a name")
+        | _ => Ok(Valid)
         },
     };
   };
@@ -151,10 +149,10 @@ module MatchForm = {
       strategy: Strategy.OnFirstChange,
       dependents: None,
       validate: ({i, j, _}) =>
-        if (i == j) {
-          Error("They can't be the same");
-        } else {
-          Ok(Valid);
+        switch (i, j) {
+        | (_, "") => Error("Pick a name")
+        | (i, j) when i == j => Error("Names must be different")
+        | (_, _) => Ok(Valid)
         },
     };
   };
@@ -211,17 +209,26 @@ module MatchAdder = {
             IField.update(form.state, event->ReactEvent.Form.target##value),
           )
         }>
+        <option value=""> "--select--"->React.string </option>
         nameList
       </select>
       " + "->React.string
       <select
         value={form.state.j}
+        disabled={
+          switch (form.result(I)) {
+          | Some(Ok(_)) => false
+          | Some(Error(_))
+          | None => true
+          }
+        }
         onChange={event =>
           form.change(
             J,
             JField.update(form.state, event->ReactEvent.Form.target##value),
           )
         }>
+        <option value=""> "--select--"->React.string </option>
         nameList
       </select>
       <input
@@ -262,6 +269,7 @@ let make = () => {
         switch (graph->Graph.toList->Blossom.Match.String.make) {
         | exception e =>
           Js.Console.error(e);
+          graph->Graph.toList->List.toArray->Js.log;
           state;
         | matches => matches
         }
@@ -283,6 +291,7 @@ let make = () => {
     );
   <div>
     <form onSubmit={form.submit->Formality.Dom.preventDefault}>
+      <p> "Add a name"->React.string </p>
       <input
         value={form.state.NameForm.name}
         disabled={form.submitting}
@@ -314,19 +323,38 @@ let make = () => {
        ->List.toArray
        ->React.array}
     </ul>
-    <h2> "Add match"->React.string </h2>
+    <h2> "All potential matches"->React.string </h2>
+    <table>
+      <tbody>
+        {graph
+         ->Graph.toList
+         ->List.mapWithIndex((key, (i, j, w)) =>
+             <tr key={Js.String.make(key)}>
+               <td> i->React.string </td>
+               <td> j->React.string </td>
+               <td> {w->Js.String.make->React.string} </td>
+             </tr>
+           )
+         ->List.toArray
+         ->React.array}
+      </tbody>
+    </table>
+    <h2> "Add potential match"->React.string </h2>
     <MatchAdder graph dispatch />
     <h2> "Matches"->React.string </h2>
-    <ul>
-      {matches
-       ->Blossom.Match.toList
-       ->List.mapWithIndex((key, (a, b)) =>
-           <li key={Js.String.make(key)}>
-             {(a ++ " + " ++ b)->React.string}
-           </li>
-         )
-       ->List.toArray
-       ->React.array}
-    </ul>
+    <table>
+      <tbody>
+        {matches
+         ->Blossom.Match.toList
+         ->List.mapWithIndex((key, (a, b)) =>
+             <tr key={Js.String.make(key)}>
+               <td> a->React.string </td>
+               <td> b->React.string </td>
+             </tr>
+           )
+         ->List.toArray
+         ->React.array}
+      </tbody>
+    </table>
   </div>;
 };

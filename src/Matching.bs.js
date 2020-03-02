@@ -279,8 +279,8 @@ function update$1(state, value) {
 }
 
 function validator_validate$1(param) {
-  if (param.i === param.j) {
-    return /* Error */Block.__(1, ["They can't be the same"]);
+  if (param.i === "") {
+    return /* Error */Block.__(1, ["Pick a name"]);
   } else {
     return /* Ok */Block.__(0, [/* Valid */0]);
   }
@@ -307,8 +307,11 @@ function update$2(state, value) {
 }
 
 function validator_validate$2(param) {
-  if (param.i === param.j) {
-    return /* Error */Block.__(1, ["They can't be the same"]);
+  var j = param.j;
+  if (j === "") {
+    return /* Error */Block.__(1, ["Pick a name"]);
+  } else if (param.i === j) {
+    return /* Error */Block.__(1, ["Names must be different"]);
   } else {
     return /* Ok */Block.__(0, [/* Valid */0]);
   }
@@ -405,33 +408,36 @@ function Matching$MatchAdder(Props) {
             })));
   var partial_arg = form.submit;
   var match = Curry._1(form.result, /* I */0);
-  var match$1 = Curry._1(form.result, /* J */1);
-  var match$2 = Curry._1(form.result, /* W */2);
   var tmp;
+  tmp = match !== undefined && !match.tag ? false : true;
+  var match$1 = Curry._1(form.result, /* I */0);
+  var match$2 = Curry._1(form.result, /* J */1);
+  var match$3 = Curry._1(form.result, /* W */2);
+  var tmp$1;
   var exit = 0;
   var message;
   var exit$1 = 0;
   var exit$2 = 0;
-  if (match !== undefined) {
-    var match$3 = match;
-    if (match$3.tag) {
-      message = match$3[0];
+  if (match$1 !== undefined) {
+    var match$4 = match$1;
+    if (match$4.tag) {
+      message = match$4[0];
       exit = 1;
     } else {
       exit$2 = 3;
     }
-  } else if (match$1 !== undefined) {
-    exit$2 = 3;
   } else if (match$2 !== undefined) {
+    exit$2 = 3;
+  } else if (match$3 !== undefined) {
     exit$1 = 2;
   } else {
-    tmp = null;
+    tmp$1 = null;
   }
   if (exit$2 === 3) {
-    if (match$1 !== undefined) {
-      var match$4 = match$1;
-      if (match$4.tag) {
-        message = match$4[0];
+    if (match$2 !== undefined) {
+      var match$5 = match$2;
+      if (match$5.tag) {
+        message = match$5[0];
         exit = 1;
       } else {
         exit$1 = 2;
@@ -441,20 +447,20 @@ function Matching$MatchAdder(Props) {
     }
   }
   if (exit$1 === 2) {
-    if (match$2 !== undefined) {
-      var match$5 = match$2;
-      if (match$5.tag) {
-        message = match$5[0];
+    if (match$3 !== undefined) {
+      var match$6 = match$3;
+      if (match$6.tag) {
+        message = match$6[0];
         exit = 1;
       } else {
-        tmp = null;
+        tmp$1 = null;
       }
     } else {
-      tmp = null;
+      tmp$1 = null;
     }
   }
   if (exit === 1) {
-    tmp = React.createElement("p", undefined, message);
+    tmp$1 = React.createElement("p", undefined, message);
   }
   return React.createElement("form", {
               onSubmit: (function (param) {
@@ -465,18 +471,23 @@ function Matching$MatchAdder(Props) {
                   onChange: (function ($$event) {
                       return Curry._2(form.change, /* I */0, update$1(form.state, $$event.target.value));
                     })
-                }, nameList), " + ", React.createElement("select", {
+                }, React.createElement("option", {
+                      value: ""
+                    }, "--select--"), nameList), " + ", React.createElement("select", {
+                  disabled: tmp,
                   value: form.state.j,
                   onChange: (function ($$event) {
                       return Curry._2(form.change, /* J */1, update$2(form.state, $$event.target.value));
                     })
-                }, nameList), React.createElement("input", {
+                }, React.createElement("option", {
+                      value: ""
+                    }, "--select--"), nameList), React.createElement("input", {
                   type: "number",
                   value: String(Belt_Option.getWithDefault(form.state.w, 0)),
                   onChange: (function ($$event) {
                       return Curry._2(form.change, /* W */2, update$3(form.state, Belt_Float.fromString($$event.target.value)));
                     })
-                }), React.createElement("button", undefined, "Submit"), tmp);
+                }), React.createElement("button", undefined, "Submit"), tmp$1);
 }
 
 var MatchAdder = {
@@ -499,6 +510,7 @@ function Matching(Props) {
                   catch (raw_e){
                     var e = Caml_js_exceptions.internalToOCamlException(raw_e);
                     console.error(e);
+                    console.log(Belt_List.toArray(toList(graph)));
                     return state;
                   }
                 }));
@@ -524,7 +536,7 @@ function Matching(Props) {
                   onSubmit: (function (param) {
                       return Formality__PublicHelpers.Dom.preventDefault(partial_arg, param);
                     })
-                }, React.createElement("input", {
+                }, React.createElement("p", undefined, "Add a name"), React.createElement("input", {
                       disabled: form.submitting,
                       value: form.state.name,
                       onBlur: (function (param) {
@@ -541,14 +553,18 @@ function Matching(Props) {
                             return React.createElement("li", {
                                         key: p
                                       }, p);
-                          })))), React.createElement("h2", undefined, "Add match"), React.createElement(Matching$MatchAdder, {
+                          })))), React.createElement("h2", undefined, "All potential matches"), React.createElement("table", undefined, React.createElement("tbody", undefined, Belt_List.toArray(Belt_List.mapWithIndex(toList(graph), (function (key, param) {
+                                return React.createElement("tr", {
+                                            key: String(key)
+                                          }, React.createElement("td", undefined, param[0]), React.createElement("td", undefined, param[1]), React.createElement("td", undefined, String(param[2])));
+                              }))))), React.createElement("h2", undefined, "Add potential match"), React.createElement(Matching$MatchAdder, {
                   graph: graph,
                   dispatch: dispatch
-                }), React.createElement("h2", undefined, "Matches"), React.createElement("ul", undefined, Belt_List.toArray(Belt_List.mapWithIndex(Match$Blossom.toList(match$1[0]), (function (key, param) {
-                            return React.createElement("li", {
-                                        key: String(key)
-                                      }, param[0] + (" + " + param[1]));
-                          })))));
+                }), React.createElement("h2", undefined, "Matches"), React.createElement("table", undefined, React.createElement("tbody", undefined, Belt_List.toArray(Belt_List.mapWithIndex(Match$Blossom.toList(match$1[0]), (function (key, param) {
+                                return React.createElement("tr", {
+                                            key: String(key)
+                                          }, React.createElement("td", undefined, param[0]), React.createElement("td", undefined, param[1]));
+                              }))))));
 }
 
 var make = Matching;

@@ -3,3 +3,5 @@ lib/
 *.swp
 .DS_Store
 .merlin
+.cache/
+dist/

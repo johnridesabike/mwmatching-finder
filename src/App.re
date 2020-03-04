@@ -465,6 +465,115 @@ module People = {
   };
 };
 
+module SvgGraph = {
+  open D3;
+  let drag = simulation => {
+    open Drag;
+
+    let dragStarted =
+      (. d) => {
+        if (!d3.event.Event.active) {
+          ForceSimulation.(simulation->alphaTarget(0.3)->restart);
+        };
+        d.fx = Js.Nullable.return(d.x);
+      };
+
+    let dragged =
+      (. d) => {
+        d.fx = Js.Nullable.return(d3.event.Event.x);
+        d.fy = Js.Nullable.return(d3.event.Event.y);
+      };
+
+    let dragEnded =
+      (. d) => {
+        if (!d3.event.Event.active) {
+          simulation->ForceSimulation.alphaTarget(0.0)->ignore;
+        };
+        d.fx = Js.Nullable.null;
+        d.fy = Js.Nullable.null;
+      };
+
+    ()
+    ->Drag.make
+    ->on(`start, dragStarted)
+    ->on(`drag, dragged)
+    ->on(`end_, dragEnded);
+  };
+
+  let height = 600;
+  let width = 600;
+
+  let renderChart = (links, vertices, svg) => {
+    open ForceSimulation;
+    let nodes = Array.map(vertices, data => Node.make(~data));
+    let simulation =
+      ForceSimulation.make(nodes)
+      ->forceLink(Links.make(links)->Links.id((. d) => d.Node.data))
+      ->forceCharge(ManyBody.make())
+      ->forceCenter(Center.make());
+    open Selection;
+    let svg = select(svg)->attrArray(`viewBox, [|0, 0, width, height|]);
+
+    let link =
+      svg
+      ->append("g")
+      ->attr(`stroke, "#999")
+      ->attr(`strokeOpacity, 0.6)
+      ->selectAll("line")
+      ->data(links)
+      ->join("line")
+      ->attr(`strokeWidth, (. d) => sqrt(d##weight));
+
+    let node =
+      svg
+      ->append("g")
+      ->attr(`stroke, "#fff")
+      ->attr(`strokeWidth, 1.5)
+      ->selectAll("circle")
+      ->data(nodes)
+      ->join("circle")
+      ->attr(`r, 5)
+      ->call(drag(simulation));
+
+    node->append("title")->text((. d) => d.Node.data)->ignore;
+
+    simulation
+    ->on(
+        `tick,
+        (.) => {
+          open Node;
+          link
+          ->attr(`x1, (. d) => d->Links.source.x)
+          ->attr(`y1, (. d) => d->Links.source.y)
+          ->attr(`x2, (. d) => d->Links.target.x)
+          ->attr(`y2, (. d) => d->Links.target.y)
+          ->ignore;
+
+          node->attr(`cx, (. d) => d.x)->attr(`cy, (. d) => d.y)->ignore;
+        },
+      )
+    ->ignore;
+  };
+
+  [@react.component]
+  let make = (~graph) => {
+    let svg = React.useRef(Js.Nullable.null);
+    React.useEffect0(() => {
+      let links =
+        Graph.toList(graph)
+        ->List.map(((i, j, w)) => {"source": i, "target": j, "weight": w})
+        ->List.toArray;
+      renderChart(
+        links,
+        Graph.verticesToArray(graph),
+        React.Ref.current(svg),
+      );
+      None;
+    });
+    <svg ref={ReactDOMRe.Ref.domRef(svg)} />;
+  };
+};
+
 let sampleGraph =
   Graph.fromList([
     ("Mary", "Joseph", 40.),
@@ -484,15 +593,21 @@ let sampleGraph =
 let make = () => {
   let (graph, dispatch) = React.useReducer(Graph.reducer, sampleGraph);
   let vertices = Graph.verticesToArray(graph);
-  <div style=Css.(style([display(`flex)]))>
-    <div> <h2> "People"->React.string </h2> <People vertices dispatch /> </div>
-    <div>
-      <h2> "Potential matches"->React.string </h2>
-      <GraphTable vertices graph dispatch />
+  <div>
+    <div style=Css.(style([display(`flex)]))>
+      <div>
+        <h2> "People"->React.string </h2>
+        <People vertices dispatch />
+      </div>
+      <div>
+        <h2> "Potential matches"->React.string </h2>
+        <GraphTable vertices graph dispatch />
+      </div>
+      <div>
+        <h2> "Matches"->React.string </h2>
+        <MatchTable graph vertices />
+      </div>
     </div>
-    <div>
-      <h2> "Matches"->React.string </h2>
-      <MatchTable graph vertices />
-    </div>
+    <SvgGraph graph />
   </div>;
 };

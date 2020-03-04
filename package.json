@@ -17,6 +17,7 @@
     "dependencies": {
         "bs-css-dom": "^1.0.1",
         "bs-webapi": "^0.15.8",
+        "d3": "^5.15.0",
         "normalize.css": "^8.0.1",
         "re-blossom": "^1.0.4",
         "re-formality": "^3.2.0",

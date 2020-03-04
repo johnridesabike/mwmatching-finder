@@ -5,3 +5,4 @@ lib/
 .merlin
 .cache/
 dist/
+*.bs.js

@@ -1,0 +1,54 @@
+body {
+    font-family: sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+}
+
+.match-adder__weight {
+    width: 2em;
+}
+
+.graph-table {
+    border-collapse: collapse;
+}
+
+.graph-table th {
+    font-weight: 400;
+    vertical-align: middle;
+}
+
+.graph-table__button {
+    height: 100%;
+    width: 100%;
+    background: none;
+    border: none;
+}
+
+.graph-table__corner {
+    transform: rotate(45deg);
+    opacity: 0.75;
+}
+
+.graph-table__top-name {
+    writing-mode: vertical-lr;
+    /* text-orientation: upright; */
+    width: 1em;
+    padding-bottom: 0.25em;
+}
+
+.graph-table__side-name {
+    padding-right: 0.25em;
+}
+
+.graph-table__cell {
+    font-family: monospace;
+    text-align: center;
+    border-style: solid;
+    border-width: 1px;
+    width: 2.5em;
+    height: 2.5em;
+}
+
+.graph-table__null-cell {
+    border-style: none;
+}

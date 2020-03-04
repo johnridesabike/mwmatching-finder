@@ -5,9 +5,9 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "build:reason": "bsb -make-world -clean-world",
-        "watch:reason": "npm run build:reason -- -w",
-        "deploy": "echo \"Not yet implemented - now.sh or surge.sh are supported out of the box\" && exit 1",
+        "build:reason": "bsb -make-world",
+        "clean:reason": "bsb -clean-world",
+        "watch:reason": "bsb -make-world -w",
         "dev": "parcel src/index.html",
         "build": "parcel build src/index.html"
     },
@@ -15,7 +15,10 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "re-blossom": "^1.0.3",
+        "bs-css-dom": "^1.0.1",
+        "bs-webapi": "^0.15.8",
+        "normalize.css": "^8.0.1",
+        "re-blossom": "^1.0.4",
         "re-formality": "^3.2.0",
         "reason-react": "^0.7.0"
     },

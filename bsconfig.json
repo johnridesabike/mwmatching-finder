@@ -2,7 +2,10 @@
     "bs-dependencies": [
         "reason-react",
         "re-blossom",
-        "re-formality"
+        "re-formality",
+        "bs-css-dom",
+        "bs-css",
+        "bs-webapi"
     ],
     "bsc-flags": [
         "-bs-super-errors"

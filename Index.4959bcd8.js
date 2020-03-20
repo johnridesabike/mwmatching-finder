@@ -968,4 +968,4 @@ module.exports=!1;
 },{"bs-css-dom/src/Css.js":"qNKJ","bs-platform/lib/js/curry.js":"Zxig","react":"n8MK","reason-promise/src/js/promise.js":"jo2D","react-feather":"Dcfk","@johnridesabike/bs-localforage/src/Record.bs.js":"Yxm4","./Graph.bs.js":"akFf","./Icons.bs.js":"XVk5","./Intro.bs.js":"z1JR","./Dialog.bs.js":"G5eZ","./ForceGraph.bs.js":"Q7is","./GraphTable.bs.js":"ZiJA","./SampleData.bs.js":"WWLt"}],"U6vj":[function(require,module,exports) {
 "use strict";var e=require("react"),r=require("reason-react/src/ReactDOMRe.js"),t=require("./App.bs.js");r.renderToElementWithId(e.createElement(t.make,{}),"root");
 },{"react":"n8MK","reason-react/src/ReactDOMRe.js":"VUZN","./App.bs.js":"k3gO"}]},{},["U6vj"], null)
-//# sourceMappingURL=/Index.4959bcd8.js.map
+//# sourceMappingURL=mwmatching-finder/Index.4959bcd8.js.map

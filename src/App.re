@@ -1,613 +1,252 @@
-open Belt;
+module Toggleable = {
+  type toggled =
+    | Open
+    | Closed;
 
-let focusRef = ref =>
-  Webapi.Dom.(
-    ref
-    ->React.Ref.current
-    ->Js.Nullable.toOption
-    ->Option.flatMap(Element.asHtmlElement)
-    ->Option.map(HtmlElement.focus)
-    ->ignore
-  );
-
-module Graph = {
-  module M = Map;
-  module S = Set;
-
-  module Edge = {
-    type t = (string, string);
-    module Cmp =
-      Id.MakeComparable({
-        type nonrec t = t;
-        let cmp: (t, t) => int =
-          ((a, b), (y, z)) =>
-            switch (compare(a, y), compare(b, z)) {
-            | (0, 0) => 0
-            | (c, d) =>
-              switch (c + d) {
-              | 0 => c
-              | e => e
-              }
-            };
-      });
-    let make = (i, j) =>
-      switch (String.compare(i, j)) {
-      | 1 => (i, j)
-      | _ => (j, i)
-      };
-  };
-
-  type t = {
-    /* A map of vertices to their neighbors */
-    vertices: S.String.t,
-    edges: M.t(Edge.t, float, Edge.Cmp.identity),
-  };
-
-  let empty = {
-    vertices: S.String.empty,
-    edges: M.make(~id=(module Edge.Cmp)),
-  };
-
-  type action =
-    | AddVertex(string)
-    | SetEdge(string, string, float)
-    | RemoveEdge(string, string)
-    | RemoveVertex(string);
-
-  let reducer = ({vertices, edges} as graph, action) =>
-    switch (action) {
-    | AddVertex(vertex) => {
-        ...graph,
-        vertices: S.String.add(vertices, vertex),
-      }
-    | SetEdge(i, j, weight) => {
-        vertices: vertices->S.String.add(i)->S.String.add(j),
-        edges: M.set(edges, Edge.make(i, j), weight),
-      }
-    | RemoveEdge(i, j) => {
-        vertices,
-        edges: M.remove(edges, Edge.make(i, j)),
-      }
-    | RemoveVertex(vertex) => {
-        ...graph,
-        vertices: S.String.remove(vertices, vertex),
-      }
-    };
-
-  let fromList = l => {
-    let rec loop = (acc, l) =>
-      switch (l) {
-      | [] => acc
-      | [(i, j, w), ...l] => loop(reducer(acc, SetEdge(i, j, w)), l)
-      };
-    loop(empty, l);
-  };
-
-  let toList = ({edges, _}) =>
-    M.reduce(edges, [], (acc, (i, j), w) => [(i, j, w), ...acc]);
-
-  let verticesToArray = ({vertices, _}) => S.String.toArray(vertices);
-  let getEdge = ({edges, _}, i, j) => M.get(edges, Edge.make(i, j));
-};
-
-module NameForm = {
-  open Formality;
-  type field =
-    | Name;
-  type state = {name: string};
-  type message = string;
-  type submissionError = unit;
-
-  module NameField = {
-    let update = (_state, value) => {name: value};
-
-    let validator = {
-      field: Name,
-      strategy: Strategy.OnFirstBlur,
-      dependents: None,
-      validate: ({name}) =>
-        switch (name) {
-        | "" => Error("Error")
-        | _ => Ok(Valid)
-        },
-    };
-  };
-
-  let validators = [NameField.validator];
-};
-
-module NameFormHook = Formality.Make(NameForm);
-
-module MatchForm = {
-  open Formality;
-  type field =
-    | I
-    | J
-    | W;
-  type state = {
-    i: string,
-    j: string,
-    w: option(float),
-  };
-  type message = string;
-  type submissionError = unit;
-
-  module IField = {
-    /* let update = (state, value) => {...state, i: value};*/
-
-    let validator = {
-      field: I,
-      strategy: Strategy.OnFirstChange,
-      dependents: None,
-      validate: ({i, _}) =>
-        switch (i) {
-        | "" => Error("Pick a name")
-        | _ => Ok(Valid)
-        },
-    };
-  };
-
-  module JField = {
-    /* let update = (state, value) => {...state, j: value};*/
-
-    let validator = {
-      field: J,
-      strategy: Strategy.OnFirstChange,
-      dependents: None,
-      validate: ({i, j, _}) =>
-        switch (i, j) {
-        | (_, "") => Error("Pick a name")
-        | (i, j) when i == j => Error("Names must be different")
-        | (_, _) => Ok(Valid)
-        },
-    };
-  };
-  module WField = {
-    let update = (state, value) => {...state, w: value};
-
-    let validator = {
-      field: W,
-      strategy: Strategy.OnFirstChange,
-      dependents: None,
-      validate: ({w, _}) =>
-        switch (w) {
-        | None => Error("Weight must be a valid number")
-        | Some(_) => Ok(Valid)
-        },
-    };
-  };
-
-  let validators = [IField.validator, JField.validator, WField.validator];
-};
-
-module MatchFormHook = Formality.Make(MatchForm);
-
-module MatchAdder = {
   [@react.component]
-  let make = (~dispatch, ~onBlur, ~i, ~j, ~w, ~focused) => {
-    open MatchFormHook;
-    open MatchForm;
-    let form =
-      useForm(
-        ~initialState={i, j, w},
-        ~onSubmit=({i, j, w}, form) => {
-          open! Formality__Validation;
-          switch (w) {
-          | Some(w) => dispatch(Graph.SetEdge(i, j, w))
-          | None => ()
-          };
-          form.notifyOnSuccess(None);
-          form.reset();
-        },
-      );
-    <form onSubmit={form.submit->Formality.Dom.preventDefault}>
-      <input type_="hidden" name="i" value=i />
-      <input type_="hidden" name="j" value=j />
-      <input
-        className="match-adder__weight"
-        type_="number"
-        value={form.state.w->Option.getWithDefault(0.)->Js.String.make}
-        ref={ReactDOMRe.Ref.domRef(focused)}
-        onBlur
-        onChange={event => {
-          form.change(
-            W,
-            WField.update(
-              form.state,
-              event->ReactEvent.Form.target##value->Float.fromString,
-            ),
-          );
-          form.submit();
-        }}
-      />
-    </form>;
-  };
-};
-
-module PersonAdder = {
-  [@react.component]
-  let make = (~dispatch) => {
-    open NameFormHook;
-    let form =
-      useForm(
-        ~initialState=NameForm.{name: ""},
-        ~onSubmit=(NameForm.{name}, form) => {
-          open! Formality__Validation;
-          dispatch(Graph.AddVertex(name));
-          form.notifyOnSuccess(None);
-          form.reset();
-        },
-      );
-    <form onSubmit={form.submit->Formality.Dom.preventDefault}>
-      <p> "Add a person"->React.string </p>
-      <input
-        value={form.state.NameForm.name}
-        disabled={form.submitting}
-        onBlur={_ => form.blur(NameForm.Name)}
-        size=10
-        onChange={event =>
-          form.change(
-            NameForm.Name,
-            NameForm.NameField.update(
-              form.state,
-              event->ReactEvent.Form.target##value,
-            ),
-          )
-        }
-      />
-      <button disabled={form.submitting}>
-        (form.submitting ? "Submitting..." : "Submit")->React.string
-      </button>
-      <p>
-        {switch (form.result(NameForm.Name)) {
-         | Some(Error(message)) => message->React.string
-         | Some(Ok(Formality.(Valid | NoValue)))
-         | None => React.null
+  let make = (~title, ~children, ~default=Open) => {
+    let (toggle, setToggle) = React.useState(() => default);
+    <div className="how-to">
+      <h2>
+        {switch (toggle) {
+         | Open =>
+           <button
+             className="button-ghost" onClick={_ => setToggle(_ => Closed)}>
+             title->React.string
+             " "->React.string
+             <Icons.ChevronDown className="icon" />
+           </button>
+         | Closed =>
+           <button
+             className="button-ghost" onClick={_ => setToggle(_ => Open)}>
+             title->React.string
+             " "->React.string
+             <Icons.ChevronLeft className="icon" />
+           </button>
          }}
+      </h2>
+      {switch (toggle) {
+       | Open => children
+       | Closed => React.null
+       }}
+    </div>;
+  };
+};
+
+module HowTo = {
+  [@react.component]
+  let make = () =>
+    <Toggleable title="How to use the table">
+      <p>
+        {"Each cell represents an edge (a link) between two people. "
+         ++ "A number indicates the weight of the edge. A blank cell "
+         ++ "indicates no edge exists."
+         |> React.string}
       </p>
-    </form>;
-  };
+      <p>
+        "An edge highlighted in "->React.string
+        <span className="color-orange"> "orange"->React.string </span>
+        {" has been chosen for matching. The people connected by that "
+         ++ "edge are mated."
+         |> React.string}
+      </p>
+      <p>
+        {"The blossom algorithm will find the path (a set of mates) "
+         ++ "that has the highest combined weight while including as "
+         ++ "highest number of people."
+         |> React.string}
+      </p>
+      <p>
+        "Enabling "->React.string
+        <em> "maximum cardinality"->React.string </em>
+        {" will tell the algorithm to only accept paths with everyone "
+         ++ "possible, even paths with dramatically lower weights."
+         |> React.string}
+      </p>
+    </Toggleable>;
 };
 
-module Table = {
+module Credits = {
   [@react.component]
-  let make = (~vertices, ~cell) => {
-    let verticesIndices = Array.size(vertices) - 1;
-    /*         👆 now there's a fun name. */
-    <table className="graph-table">
-      <tbody>
-        <tr>
-          <th className="graph-table__corner"> "Name"->React.string </th>
-          {vertices
-           ->Array.reverse
-           ->Array.slice(~len=verticesIndices, ~offset=0)
-           ->Array.map(p =>
-               <th key=p className="graph-table__top-name">
-                 p->React.string
-               </th>
-             )
-           ->React.array}
-        </tr>
-        {vertices
-         ->Array.slice(~len=verticesIndices, ~offset=0)
-         ->Array.mapWithIndex((i, p) =>
-             <tr key=p>
-               <th className="graph-table__side-name"> p->React.string </th>
-               {vertices
-                ->Array.reverse
-                ->Array.slice(~len=verticesIndices, ~offset=0)
-                ->Array.mapWithIndex((i', p') =>
-                    if (verticesIndices - i' <= i) {
-                      <td key=p' className="graph-table__null-cell" />;
-                    } else {
-                      <td key=p' className="graph-table__cell">
-                        {cell(p, p')}
-                      </td>;
-                    }
-                  )
-                ->React.array}
-             </tr>
-           )
-         ->React.array}
-      </tbody>
-    </table>;
-  };
+  let make = () =>
+    <Toggleable title="Credits" default=Toggleable.Closed>
+      <div style=Css.(style([textAlign(`center)]))>
+        <h3> "Creator & maintainer"->React.string </h3>
+        <p>
+          <a href="https://johnridesa.bike/"> "John Jackson"->React.string </a>
+        </p>
+        <h3> "Software"->React.string </h3>
+        <p>
+          <a href="https://nodejs.org/en/">
+            <Icons.NodeJs style=Css.(style([height(em(1.))])) />
+            "Node.js"->React.string
+          </a>
+        </p>
+        <p>
+          <a href="https://reactjs.org/">
+            <Icons.React style=Css.(style([height(em(1.))])) />
+            {j|React|j}->React.string
+          </a>
+        </p>
+        <p>
+          <a href="https://reasonml.github.io/">
+            <Icons.Reason style=Css.(style([height(em(1.))])) />
+            {j|Reason|j}->React.string
+          </a>
+        </p>
+        <p>
+          <a href="https://github.com/johnridesabike/re-blossom">
+            {j|🌺 re-blossom|j}->React.string
+          </a>
+        </p>
+        <p>
+          <a href="https://d3js.org/">
+            <Icons.D3 style=Css.(style([height(em(1.))])) />
+            "D3.js"->React.string
+          </a>
+        </p>
+        <p>
+          <a href="https://bucklescript.github.io/">
+            {j|BuckleScript|j}->React.string
+          </a>
+        </p>
+        <p>
+          <a href="https://github.com/MinimaHQ/re-formality">
+            "Formality"->React.string
+          </a>
+        </p>
+        <p>
+          <a href="https://localforage.github.io/localForage/">
+            "LocalForage"->React.string
+          </a>
+        </p>
+        <p>
+          <a href="https://github.com/reasonml-labs/bs-css">
+            "bs-css"->React.string
+          </a>
+        </p>
+        <p>
+          <a href="https://github.com/aantron/promise">
+            "Reason Promise"->React.string
+          </a>
+        </p>
+        <p>
+          <a href="https://github.com/glennsl/bs-json">
+            "bs-json"->React.string
+          </a>
+        </p>
+        <p> <a href="https://parceljs.org/"> "Parcel"->React.string </a> </p>
+        <p>
+          <a href="https://github.com/">
+            "git + "->React.string
+            <Icons.GitHub style=Css.(style([height(em(1.))])) />
+            "GitHub"->React.string
+          </a>
+        </p>
+      </div>
+    </Toggleable>;
 };
 
-module GraphTable = {
-  type edit =
-    | SetWeight(string, string)
-    | Remove
-    | NotEditing;
+module Storage = {
+  open LocalForage;
+  let graph =
+    Record.make(
+      Config.make(
+        ~name="blossom-playground",
+        ~storeName="blossom-playground",
+        (),
+      ),
+      (module Graph),
+    );
+};
 
+module Main = {
   [@react.component]
-  let make = (~vertices, ~graph, ~dispatch) => {
-    let (editing, setEditing) = React.useState(() => NotEditing);
-    let focused = React.useRef(Js.Nullable.null);
+  let make = (~graph, ~setShowIntro) => {
+    let (graph, dispatch) = React.useReducer(Graph.reducer, graph);
     React.useEffect1(
       () => {
-        focusRef(focused);
+        LocalForage.Record.set(Storage.graph, ~items=graph)->ignore;
         None;
       },
-      [|editing|],
+      [|graph|],
     );
-    <div>
-      <div>
-        {switch (editing) {
-         | Remove =>
-           <button onClick={_ => setEditing(_ => NotEditing)}>
-             "Done"->React.string
-           </button>
-         | SetWeight(_, _)
-         | NotEditing =>
-           <button onClick={_ => setEditing(_ => Remove)}>
-             "Remove"->React.string
-           </button>
-         }}
-      </div>
-      <Table
-        vertices
-        cell={(i, j) =>
-          switch (editing) {
-          | SetWeight(i', j') when i == i' && j == j' =>
-            <MatchAdder
-              dispatch
-              i
-              j
-              focused
-              w={Graph.getEdge(graph, i, j)}
-              onBlur={_ => setEditing(_ => NotEditing)}
-            />
-          | SetWeight(_, _)
-          | NotEditing =>
-            <button
-              className="graph-table__button"
-              onClick={e => {
-                ReactEvent.Mouse.preventDefault(e);
-                setEditing(_ => SetWeight(i, j));
-              }}>
-              {switch (Graph.getEdge(graph, i, j)) {
-               | None => React.null
-               | Some(weight) => weight->Js.String.make->React.string
-               }}
-            </button>
-          | Remove =>
-            switch (Graph.getEdge(graph, i, j)) {
-            | None => React.null
-            | Some(_) =>
-              <button onClick={_ => dispatch(Graph.RemoveEdge(i, j))}>
-                "x"->React.string
-              </button>
-            }
-          }
-        }
-      />
-    </div>;
-  };
-};
-
-module MatchTable = {
-  [@react.component]
-  let make = (~graph, ~vertices) => {
-    let (matches, setMatches) =
-      React.useState(() => graph->Graph.toList->Blossom.Match.String.make);
+    let vertices = Graph.verticesToArray(graph);
     let (cardinality, setCardinality) = React.useState(() => `NotMax);
-    React.useEffect2(
-      () => {
-        setMatches(state =>
-          switch (
-            graph->Graph.toList->(Blossom.Match.String.make(~cardinality))
-          ) {
-          | exception e =>
-            Js.Console.error(e);
-            graph->Graph.toList->List.toArray->Js.log;
-            state;
-          | matches => matches
-          }
-        );
-        None;
-      },
-      (graph, cardinality),
-    );
-    <div>
-      <div>
-        <label>
-          "Maximum cardinality "->React.string
-          <input
-            type_="checkbox"
-            checked={
-              switch (cardinality) {
-              | `Max => true
-              | `NotMax => false
-              }
-            }
-            onChange={e =>
-              if (ReactEvent.Form.currentTarget(e)##checked) {
-                setCardinality(_ => `Max);
-              } else {
-                setCardinality(_ => `NotMax);
-              }
-            }
-          />
-        </label>
+    let mates = Graph.useMates(graph, cardinality);
+    <main role="main" className="main">
+      <h1> {j|Maximum Weighted Matching Finder|j}->React.string </h1>
+      <p style=Css.(style([textAlign(`center)]))>
+        <button className="show-intro" onClick={_ => setShowIntro(_ => true)}>
+          "Show introduction"->React.string
+        </button>
+      </p>
+      <div className="layout">
+        <GraphTable vertices graph dispatch cardinality setCardinality mates />
+        <ForceGraph graph mates width=400 height=400 />
       </div>
-      <Table
-        vertices
-        cell={(i, j) =>
-          switch (Blossom.Match.get(matches, i)) {
-          | Some(j') when j' == j => {j|✅|j}->Js.String.make->React.string
-          | _ => React.null
-          }
-        }
-      />
-    </div>;
+      <HowTo />
+      <Credits />
+      <footer className="footer font-small">
+        <p>
+          "Copyright \xA9 2020 "->React.string
+          <a href="https://johnridesa.bike/"> "John Jackson"->React.string </a>
+        </p>
+        <p>
+          "Powered by: "->React.string
+          <a href="https://reactjs.org/">
+            <Icons.React style=Css.(style([height(em(1.))])) />
+            {j|React|j}->React.string
+          </a>
+          " "->React.string
+          <a href="https://reasonml.github.io/">
+            <Icons.Reason style=Css.(style([height(em(1.))])) />
+            {j|Reason|j}->React.string
+          </a>
+          "\xa0 "->React.string
+          <a href="https://github.com/johnridesabike/re-blossom">
+            {j|🌺 re-blossom|j}->React.string
+          </a>
+        </p>
+      </footer>
+    </main>;
   };
 };
 
-module People = {
-  [@react.component]
-  let make = (~vertices, ~dispatch) => {
-    <div>
-      <ul>
-        {vertices
-         ->Array.map(p =>
-             <li key=p>
-               p->React.string
-               <button onClick={_ => dispatch(Graph.RemoveVertex(p))}>
-                 "x"->React.string
-               </button>
-             </li>
-           )
-         ->React.array}
-      </ul>
-      <PersonAdder dispatch />
-    </div>;
-  };
-};
-
-module SvgGraph = {
-  open D3;
-  let drag = simulation => {
-    open Drag;
-
-    let dragStarted =
-      (. d) => {
-        if (!d3.event.Event.active) {
-          ForceSimulation.(simulation->alphaTarget(0.3)->restart);
-        };
-        d.fx = Js.Nullable.return(d.x);
-      };
-
-    let dragged =
-      (. d) => {
-        d.fx = Js.Nullable.return(d3.event.Event.x);
-        d.fy = Js.Nullable.return(d3.event.Event.y);
-      };
-
-    let dragEnded =
-      (. d) => {
-        if (!d3.event.Event.active) {
-          simulation->ForceSimulation.alphaTarget(0.0)->ignore;
-        };
-        d.fx = Js.Nullable.null;
-        d.fy = Js.Nullable.null;
-      };
-
-    ()
-    ->Drag.make
-    ->on(`start, dragStarted)
-    ->on(`drag, dragged)
-    ->on(`end_, dragEnded);
-  };
-
-  let height = 600;
-  let width = 600;
-
-  let renderChart = (links, vertices, svg) => {
-    open ForceSimulation;
-    let nodes = Array.map(vertices, data => Node.make(~data));
-    let simulation =
-      ForceSimulation.make(nodes)
-      ->forceLink(Links.make(links)->Links.id((. d) => d.Node.data))
-      ->forceCharge(ManyBody.make())
-      ->forceCenter(Center.make());
-    open Selection;
-    let svg = select(svg)->attrArray(`viewBox, [|0, 0, width, height|]);
-
-    let link =
-      svg
-      ->append("g")
-      ->attr(`stroke, "#999")
-      ->attr(`strokeOpacity, 0.6)
-      ->selectAll("line")
-      ->data(links)
-      ->join("line")
-      ->attr(`strokeWidth, (. d) => sqrt(d##weight));
-
-    let node =
-      svg
-      ->append("g")
-      ->attr(`stroke, "#fff")
-      ->attr(`strokeWidth, 1.5)
-      ->selectAll("circle")
-      ->data(nodes)
-      ->join("circle")
-      ->attr(`r, 5)
-      ->call(drag(simulation));
-
-    node->append("title")->text((. d) => d.Node.data)->ignore;
-
-    simulation
-    ->on(
-        `tick,
-        (.) => {
-          open Node;
-          link
-          ->attr(`x1, (. d) => d->Links.source.x)
-          ->attr(`y1, (. d) => d->Links.source.y)
-          ->attr(`x2, (. d) => d->Links.target.x)
-          ->attr(`y2, (. d) => d->Links.target.y)
-          ->ignore;
-
-          node->attr(`cx, (. d) => d.x)->attr(`cy, (. d) => d.y)->ignore;
-        },
-      )
-    ->ignore;
-  };
-
-  [@react.component]
-  let make = (~graph) => {
-    let svg = React.useRef(Js.Nullable.null);
-    React.useEffect0(() => {
-      let links =
-        Graph.toList(graph)
-        ->List.map(((i, j, w)) => {"source": i, "target": j, "weight": w})
-        ->List.toArray;
-      renderChart(
-        links,
-        Graph.verticesToArray(graph),
-        React.Ref.current(svg),
-      );
-      None;
-    });
-    <svg ref={ReactDOMRe.Ref.domRef(svg)} />;
-  };
-};
-
-let sampleGraph =
-  Graph.fromList([
-    ("Mary", "Joseph", 40.),
-    ("Mary", "Michael", 40.),
-    ("Joseph", "Michael", 60.),
-    ("Joseph", "Gabriel", 55.),
-    ("Michael", "Raphael", 55.),
-    ("Gabriel", "Raphael", 50.),
-    ("Mary", "Paul", 15.),
-    ("Raphael", "Peter", 30.),
-    ("Peter", "John", 10.),
-    ("Paul", "James", 10.),
-    ("Gabriel", "Andrew", 30.),
-  ]);
+type loaded('a) =
+  | Loading
+  | Loaded('a);
 
 [@react.component]
 let make = () => {
-  let (graph, dispatch) = React.useReducer(Graph.reducer, sampleGraph);
-  let vertices = Graph.verticesToArray(graph);
-  <div>
-    <div style=Css.(style([display(`flex)]))>
-      <div>
-        <h2> "People"->React.string </h2>
-        <People vertices dispatch />
-      </div>
-      <div>
-        <h2> "Potential matches"->React.string </h2>
-        <GraphTable vertices graph dispatch />
-      </div>
-      <div>
-        <h2> "Matches"->React.string </h2>
-        <MatchTable graph vertices />
-      </div>
-    </div>
-    <SvgGraph graph />
-  </div>;
+  let (loaded, setLoaded) = React.useState(() => Loading);
+  let (showIntro, setShowIntro) = React.useState(() => false);
+  React.useEffect0(() => {
+    LocalForage.Record.get(Storage.graph)
+    ->Promise.Js.fromBsPromise
+    ->Promise.Js.toResult
+    ->Promise.tapOk(graph => setLoaded(_ => Loaded(graph)))
+    ->Promise.tapError(_ => {
+        setLoaded(_ => Loaded(SampleData.a));
+        setShowIntro(_ => true);
+      })
+    ->ignore;
+    None;
+  });
+  switch (loaded) {
+  | Loading => React.null
+  | Loaded(graph) =>
+    <React.Fragment>
+      <Main graph setShowIntro />
+      {switch (showIntro) {
+       | false => React.null
+       | true =>
+         <Dialog
+           ariaLabel="Introduction to maximum weighted matching "
+           onDismiss={() => setShowIntro(_ => false)}>
+           <Intro close={() => setShowIntro(_ => false)} />
+         </Dialog>
+       }}
+    </React.Fragment>
+  };
 };

@@ -5,7 +5,11 @@
         "re-formality",
         "bs-css-dom",
         "bs-css",
-        "bs-webapi"
+        "bs-webapi",
+        "re-classnames",
+        "@johnridesabike/bs-localforage",
+        "@glennsl/bs-json",
+        "reason-promise"
     ],
     "bsc-flags": [
         "-bs-super-errors"
@@ -17,7 +21,9 @@
             "in-source": true
         }
     ],
-    "ppx-flags": [],
+    "ppx-flags": [
+      "re-formality/ppx"
+    ],
     "reason": {
         "react-jsx": 3
     },
@@ -31,7 +37,7 @@
     "suffix": ".bs.js",
     "name": "blossom-playground",
     "warnings": {
-        "number": "+A-48",
+        "number": "+A-48-42",
         "error": "+A-3-44-102"
     }
 }

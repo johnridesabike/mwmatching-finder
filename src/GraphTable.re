@@ -216,7 +216,7 @@ let make =
          <div className="toolbar">
            <button
              className="toolbar__item" onClick={_ => setDialog(_ => Reset)}>
-             "Reset Graph"->React.string
+             "New graph"->React.string
            </button>
          </div>
        </React.Fragment>

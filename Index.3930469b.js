@@ -99211,9 +99211,12 @@ function ForceGraph$SvgGraph(Props) {
   })) : React.createElement(ForceGraph$SvgGraph$InfoBox, {
     offsetX: 128,
     offsetY: height$1,
-    children: React.createElement("text", {
-      fill: "white"
-    }, selected[0])
+    children: React.createElement(ForceGraph$SvgGraph$Legend$Circle, {
+      offsetY: 0,
+      fill: pink,
+      children: selected[0],
+      stroke: orange
+    })
   });
   return React.createElement("svg", {
     role: "img",
@@ -99332,7 +99335,9 @@ function ForceGraph(Props) {
   var mates = Props.mates;
   var width = Props.width;
   var height = Props.height;
+  var captionOpt = Props.children;
   var styleOpt = Props.style;
+  var caption = captionOpt !== undefined ? Caml_option.valFromOption(captionOpt) : null;
   var style = styleOpt !== undefined ? Caml_option.valFromOption(styleOpt) : {};
   var nodes = Belt_Array.map(Graph$BlossomPlayground.verticesToArray(graph), function (id) {
     var mate = Match$Blossom.get(mates, id);
@@ -99381,7 +99386,7 @@ function ForceGraph(Props) {
   var simulation = D3Force.forceSimulation(nodes).force("link", forceLink).force("charge", charge).force("center", D3Force.forceCenter(width / 2 | 0, height / 2 | 0)).tick(180);
   var nodes$1 = simulation.nodes();
   var links$1 = forceLink.links();
-  return React.createElement("div", {
+  return React.createElement("figure", {
     className: "force-graph",
     style: style
   }, React.createElement(ForceGraph$SvgGraph, {
@@ -99390,7 +99395,9 @@ function ForceGraph(Props) {
     links: links$1,
     nodes: nodes$1,
     gutterSize: 126
-  }));
+  }), React.createElement("figcaption", {
+    className: "force-graph__caption"
+  }, caption));
 }
 
 var make = ForceGraph;
@@ -103055,7 +103062,7 @@ function useAutoFocus(param) {
   return focused;
 }
 
-function Forms$PersonEditor(Props) {
+function Forms$VertexEditor(Props) {
   var dispatch = Props.dispatch;
   var onSubmit = Props.onSubmit;
   var name = Props.name;
@@ -103166,11 +103173,11 @@ function Forms$PersonEditor(Props) {
   }, form.submitting ? "Submitting..." : form.input.delete ? "Delete" : "Submit"), tmp);
 }
 
-var PersonEditor = {
-  make: Forms$PersonEditor
+var VertexEditor = {
+  make: Forms$VertexEditor
 };
 
-function Forms$PersonAdder(Props) {
+function Forms$VertexAdder(Props) {
   var dispatch = Props.dispatch;
   var onSubmit = Props.onSubmit;
   var names = Props.names;
@@ -103245,8 +103252,8 @@ function Forms$PersonAdder(Props) {
   }, form.submitting ? "Submitting..." : "Submit"), tmp);
 }
 
-var PersonAdder = {
-  make: Forms$PersonAdder
+var VertexAdder = {
+  make: Forms$VertexAdder
 };
 
 function Forms$EdgeSetter(Props) {
@@ -103351,8 +103358,8 @@ function Forms$EdgeSetter(Props) {
 var EdgeSetter = {
   make: Forms$EdgeSetter
 };
-exports.PersonEditor = PersonEditor;
-exports.PersonAdder = PersonAdder;
+exports.VertexEditor = VertexEditor;
+exports.VertexAdder = VertexAdder;
 exports.EdgeSetter = EdgeSetter;
 /* Css Not a pure module */
 },{"re-classnames/src/Cn.bs.js":"../node_modules/re-classnames/src/Cn.bs.js","bs-css-dom/src/Css.js":"../node_modules/bs-css-dom/src/Css.js","bs-platform/lib/js/block.js":"../node_modules/bs-platform/lib/js/block.js","bs-platform/lib/js/curry.js":"../node_modules/bs-platform/lib/js/curry.js","react":"../node_modules/react/index.js","re-formality/src/Formality.bs.js":"../node_modules/re-formality/src/Formality.bs.js","bs-platform/lib/js/belt_Float.js":"../node_modules/bs-platform/lib/js/belt_Float.js","bs-platform/lib/js/belt_Option.js":"../node_modules/bs-platform/lib/js/belt_Option.js","bs-platform/lib/js/caml_option.js":"../node_modules/bs-platform/lib/js/caml_option.js","bs-platform/lib/js/belt_SetString.js":"../node_modules/bs-platform/lib/js/belt_SetString.js","bs-webapi/src/Webapi/Webapi__Dom/Webapi__Dom__Element.js":"../node_modules/bs-webapi/src/Webapi/Webapi__Dom/Webapi__Dom__Element.js","re-formality/src/Formality__ReactUpdate.bs.js":"../node_modules/re-formality/src/Formality__ReactUpdate.bs.js"}],"../node_modules/warning/warning.js":[function(require,module,exports) {
@@ -108147,7 +108154,7 @@ function GraphTable$Dialog(Props) {
 
 function GraphTable$Table(Props) {
   var vertices = Props.vertices;
-  var editPerson = Props.editPerson;
+  var editVertex = Props.editVertex;
   var editEdge = Props.editEdge;
   var mates = Props.mates;
   var graph = Props.graph;
@@ -108170,7 +108177,7 @@ function GraphTable$Table(Props) {
       className: "graph-table__name-button",
       disabled: disabled,
       onClick: function onClick(param) {
-        return Curry._1(editPerson, p);
+        return Curry._1(editVertex, p);
       }
     }, React.createElement("div", {
       className: "vertical-lr"
@@ -108185,7 +108192,7 @@ function GraphTable$Table(Props) {
       className: "graph-table__name-button",
       disabled: disabled,
       onClick: function onClick(param) {
-        return Curry._1(editPerson, i);
+        return Curry._1(editVertex, i);
       }
     }, i)), Belt_Array.mapWithIndex(Belt_Array.slice(Belt_Array.reverse(vertices), 0, verticesIndices), function (index$prime, j) {
       if ((verticesIndices - index$prime | 0) <= index) {
@@ -108275,7 +108282,7 @@ function GraphTable(Props) {
         children: null
       }, React.createElement(GraphTable$Table, {
         vertices: vertices,
-        editPerson: function editPerson(p) {
+        editVertex: function editVertex(p) {
           return Curry._1(setDialog, function (param) {
             return (
               /* EditingVertex */
@@ -108324,7 +108331,7 @@ function GraphTable(Props) {
       /* NewVertex */
       1:
         tmp$1 = React.createElement(GraphTable$Dialog, {
-          children: React.createElement(Forms$BlossomPlayground.PersonAdder.make, {
+          children: React.createElement(Forms$BlossomPlayground.VertexAdder.make, {
             dispatch: dispatch,
             onSubmit: closeDialog,
             names: graph.vertices
@@ -108395,7 +108402,7 @@ function GraphTable(Props) {
   } else {
     var person = dialog[0];
     tmp$1 = React.createElement(GraphTable$Dialog, {
-      children: React.createElement(Forms$BlossomPlayground.PersonEditor.make, {
+      children: React.createElement(Forms$BlossomPlayground.VertexEditor.make, {
         dispatch: dispatch,
         onSubmit: closeDialog,
         name: person,
@@ -108483,7 +108490,7 @@ var SampleData$BlossomPlayground = require("./SampleData.bs.js");
 
 var vertices = Graph$BlossomPlayground.verticesToArray(SampleData$BlossomPlayground.a);
 
-function editPerson(param) {
+function editVertex(param) {
   return (
     /* () */
     0
@@ -108501,7 +108508,7 @@ function Intro(Props) {
   var close = Props.close;
   return React.createElement("article", {
     className: "intro"
-  }, React.createElement("h2", undefined, "Welcome to the maximum weighted matching finder"), React.createElement("p", undefined, "This is an app for finding matches on weighted graphs. If you're new to this topic, here's a quick introduction."), React.createElement("p", {
+  }, React.createElement("h2", undefined, "Welcome to the maximum weighted matching finder"), React.createElement("p", undefined, "This is an app for finding matches on weighted graphs. If you're new\n       to this topic, here's a quick introduction."), React.createElement("p", {
     style: Css.style(
     /* :: */
     [Css.textAlign(
@@ -108520,7 +108527,7 @@ function Intro(Props) {
     return React.createElement("li", {
       key: s
     }, s);
-  })), React.createElement("p", undefined, "(This isn't ", React.createElement("em", undefined, "all"), " possible pairings, but for brevity we'll stick to this list. In practice, your list will usually be much longer.)"), React.createElement("p", undefined, "Next, you will need to determine the ", React.createElement("em", undefined, "weight"), " of each pairing. This is a floating-point number that indicates how desirable that pairing is."), React.createElement("table", {
+  })), React.createElement("p", undefined, "(This isn't ", React.createElement("em", undefined, "all"), " possible pairings, but for brevity we'll stick to this list.\n       In practice, your list will usually be much longer.)"), React.createElement("p", undefined, "Next, you will need to determine the ", React.createElement("em", undefined, "weight"), " of each pairing. This is a floating-point number that indicates how\n       desirable that pairing is."), React.createElement("table", {
     style: Css.style(
     /* :: */
     [Css.margin(
@@ -108533,8 +108540,11 @@ function Intro(Props) {
     /* [] */
     0]])
   }, React.createElement("tbody", undefined, React.createElement("tr", undefined, React.createElement("th", {
-    colSpan: 2
-  }, "Pair"), React.createElement("th", undefined, "Weight")), Belt_Array.map([
+    colSpan: 2,
+    scope: "col"
+  }, "Pair"), React.createElement("th", {
+    scope: "col"
+  }, "Weight")), Belt_Array.map([
   /* tuple */
   ["Mary", "Joseph", 40],
   /* tuple */
@@ -108580,7 +108590,7 @@ function Intro(Props) {
       /* [] */
       0])
     }, String(param[2])));
-  }))), React.createElement("p", undefined, "Alternatively, we can lay it out on a table like this:"), React.createElement("div", {
+  }))), React.createElement("p", undefined, "Alternatively, we can lay it out on a cross-table like this:"), React.createElement("div", {
     style: Css.style(
     /* :: */
     [Css.overflowX(
@@ -108590,7 +108600,7 @@ function Intro(Props) {
     0])
   }, React.createElement(GraphTable$BlossomPlayground.Table.make, {
     vertices: vertices,
-    editPerson: editPerson,
+    editVertex: editVertex,
     editEdge: editEdge,
     mates: Match$Blossom.$$String.make(undefined,
     /* [] */
@@ -108604,13 +108614,14 @@ function Intro(Props) {
     -1065951377),
     /* [] */
     0])
-  })), React.createElement("p", undefined, "In graph theory, each of the people is a \"vertex,\" and the connection between each pair of people is an \"edge.\" Another way to visualize it is like this:"), React.createElement(ForceGraph$BlossomPlayground.make, {
+  })), React.createElement("p", undefined, "In graph theory, each of the people is a \"vertex,\" and the\n        connection between each pair of people is an \"edge.\" Another way\n        to visualize it is like this:"), React.createElement(ForceGraph$BlossomPlayground.make, {
     graph: SampleData$BlossomPlayground.a,
     mates: Match$Blossom.$$String.make(undefined,
     /* [] */
     0),
     width: 400,
     height: 400,
+    children: "Tap or mouse-over a circle to see who it represents.",
     style: Css.style(
     /* :: */
     [Css.margin(
@@ -108618,9 +108629,7 @@ function Intro(Props) {
     -1065951377),
     /* [] */
     0])
-  }), React.createElement("p", {
-    className: "font-small center-text"
-  }, "Tap or mouse-over a circle to see who it represents."), React.createElement("p", undefined, "Now we let the algorithm work its magic. It will find a series of edges that have the highest possible combined weight, where no vertex is listed twice, and where no vertex is without a mate. In this example, the result is:"), React.createElement("ul", undefined, Belt_Array.map(["Mary, Joseph", "Matthew, Luke", "Mark, James", "John, Peter", "Andrew, Philip"], function (s) {
+  }), React.createElement("p", undefined, "Now we let the algorithm work its magic. It will find a series of\n        edges that have the highest possible combined weight, where no\n        vertex is listed twice, and where no vertex is without a mate. In\n        this example, the result is:"), React.createElement("ul", undefined, Belt_Array.map(["Mary, Joseph", "Matthew, Luke", "Mark, James", "John, Peter", "Andrew, Philip"], function (s) {
     return React.createElement("li", {
       key: s
     }, s);
@@ -108629,6 +108638,7 @@ function Intro(Props) {
     mates: Match$Blossom.$$String.make(undefined, Graph$BlossomPlayground.toList(SampleData$BlossomPlayground.a)),
     width: 400,
     height: 400,
+    children: "Tap or mouse-over a circle to see who it represents.",
     style: Css.style(
     /* :: */
     [Css.margin(
@@ -108636,9 +108646,7 @@ function Intro(Props) {
     -1065951377),
     /* [] */
     0])
-  }), React.createElement("p", {
-    className: "font-small center-text"
-  }, "Tap or mouse-over a circle to see who it represents."), React.createElement("p", undefined, "Note that we couldn't use the edge with the highest weight because choosing it would leave another vertex with no connections. We also have to use the two edges with the lowest weights because we're committed to matching as many vertices as possible."), React.createElement("p", undefined, "As you can see, finding the maximum weighted matching is often unintuitive. Imagine how much more difficult this becomes when you have dozens, or hundreds, of people, and we could potentially match every person with anyone else!"), React.createElement("p", undefined, "Fortunately, the algorithm here figures it out for us almost instantly. Try it out with some different data! It's powered by ", React.createElement("a", {
+  }), React.createElement("p", undefined, "Note that we couldn't use the edge with the highest weight because\n        choosing it would leave another vertex with no connections. We also\n        have to use the two edges with the lowest weights because we're\n        committed to matching as many vertices as possible."), React.createElement("p", undefined, "As you can see, finding the maximum weighted matching is often\n        unintuitive. Imagine how much more difficult this becomes when you\n        have dozens, or hundreds, of people, and we could potentially match\n        every person with anyone else!"), React.createElement("p", undefined, "Fortunately, the algorithm here figures it out for us almost\n        instantly. Try it out with some different data! It's powered by ", React.createElement("a", {
     href: "https://github.com/johnridesabike/re-blossom",
     target: "_blank"
   }, "this implementation of the blossom algorithm"), "."), React.createElement("p", {
@@ -108909,7 +108917,9 @@ function App$Main(Props) {
     className: "footer font-small"
   }, React.createElement("p", undefined, "Copyright \xa9 2020 ", React.createElement("a", {
     href: "https://johnridesa.bike/"
-  }, "John Jackson")), React.createElement("p", undefined, "Powered by: ", React.createElement("a", {
+  }, "John Jackson")), React.createElement("p", undefined, React.createElement("a", {
+    href: "https://github.com/johnridesabike/mwmatching-finder"
+  }, "Browse the source")), React.createElement("p", undefined, "Powered by: ", React.createElement("a", {
     href: "https://reactjs.org/"
   }, React.createElement(Icons$BlossomPlayground.React.make, {
     style: Css.style(
@@ -109035,7 +109045,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65306" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50523" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

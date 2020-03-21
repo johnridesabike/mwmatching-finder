@@ -176,7 +176,7 @@ th {
 }
 
 .how-to {
-    padding: 0 4px;
+    padding: 0 8px;
 }
 
 .footer {
@@ -187,6 +187,7 @@ th {
     flex-flow: column;
     align-items: center;
     padding: 0 4px;
+    margin-top: 24px;
 }
 
 .graph-table-wrapper {
@@ -320,6 +321,11 @@ th {
     border-color: var(--color__red);
 }
 
+.force-graph__caption {
+    font-size: var(--font__small);
+    text-align: center;
+}
+
 /* Tablet-portrait and up */
 @media screen and (min-width: 600px) {
     h1 {
@@ -356,6 +362,10 @@ th {
 
     .toolbar {
         flex-wrap: wrap;
+    }
+
+    .how-to {
+        padding: 0;
     }
 
     .layout {

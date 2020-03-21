@@ -19,7 +19,7 @@ type simpleIcon = {
   path: string,
 };
 
-module SimpleIcon = (IconData: {let icon: simpleIcon;}) => {
+module MakeSimpleIcon = (IconData: {let icon: simpleIcon;}) => {
   [@react.component]
   let make =
       (
@@ -47,26 +47,31 @@ module SimpleIcon = (IconData: {let icon: simpleIcon;}) => {
 };
 
 module Reason =
-  SimpleIcon({
+  MakeSimpleIcon({
     [@bs.module] external icon: simpleIcon = "simple-icons/icons/reason";
   });
 
 module React =
-  SimpleIcon({
+  MakeSimpleIcon({
     [@bs.module] external icon: simpleIcon = "simple-icons/icons/react";
   });
 
 module D3 =
-  SimpleIcon({
+  MakeSimpleIcon({
     [@bs.module] external icon: simpleIcon = "simple-icons/icons/d3-dot-js";
   });
 
 module GitHub =
-  SimpleIcon({
+  MakeSimpleIcon({
     [@bs.module] external icon: simpleIcon = "simple-icons/icons/github";
   });
 
 module NodeJs =
-  SimpleIcon({
+  MakeSimpleIcon({
     [@bs.module] external icon: simpleIcon = "simple-icons/icons/node-dot-js";
+  });
+
+module SimpleIcons =
+  MakeSimpleIcon({
+    [@bs.module] external icon: simpleIcon = "simple-icons/icons/simpleicons";
   });

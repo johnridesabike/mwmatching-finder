@@ -229,7 +229,9 @@ module SvgGraph = {
       {switch (selected) {
        | Single(id) =>
          <InfoBox offsetX=128 offsetY=height>
-           <text fill="white"> id->React.string </text>
+           <Legend.Circle offsetY=0 fill=Color.pink stroke=Color.orange>
+             id->React.string
+           </Legend.Circle>
          </InfoBox>
        | Mated(id1, id2) =>
          <InfoBox offsetX=128 offsetY=height>
@@ -247,7 +249,15 @@ module SvgGraph = {
 };
 
 [@react.component]
-let make = (~graph, ~mates, ~width, ~height, ~style=ReactDOMRe.Style.make()) => {
+let make =
+    (
+      ~graph,
+      ~mates,
+      ~width,
+      ~height,
+      ~children as caption=React.null,
+      ~style=ReactDOMRe.Style.make(),
+    ) => {
   let nodes =
     graph
     ->Graph.verticesToArray
@@ -301,7 +311,8 @@ let make = (~graph, ~mates, ~width, ~height, ~style=ReactDOMRe.Style.make()) => 
   let nodes = simulation->Simulation.getNodes;
   let links = forceLink->Links.unsafeToArray;
 
-  <div className="force-graph" style>
+  <figure className="force-graph" style>
     <SvgGraph width height gutterSize=126 links nodes />
-  </div>;
+    <figcaption className="force-graph__caption"> caption </figcaption>
+  </figure>;
 };

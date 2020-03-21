@@ -1,4 +1,4 @@
-module PersonEditor: {
+module VertexEditor: {
   [@react.component]
   let make:
     (
@@ -10,7 +10,7 @@ module PersonEditor: {
     React.element;
 };
 
-module PersonAdder: {
+module VertexAdder: {
   [@react.component]
   let make:
     (

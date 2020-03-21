@@ -1,7 +1,7 @@
 open Belt;
 let graph = SampleData.a;
 let vertices = Graph.verticesToArray(graph);
-let editPerson = _ => ();
+let editVertex = _ => ();
 let editEdge = (_, _, _) => ();
 
 [@react.component]
@@ -9,9 +9,9 @@ let make = (~close) => {
   <article className="intro">
     <h2> "Welcome to the maximum weighted matching finder"->React.string </h2>
     <p>
-      {"This is an app for finding matches on weighted graphs. If you're new "
-       ++ "to this topic, here's a quick introduction."
-       |> React.string}
+      {|This is an app for finding matches on weighted graphs. If you're new
+       to this topic, here's a quick introduction.|}
+      ->React.string
     </p>
     <p style=Css.(style([textAlign(`center)]))>
       <button className="font-small" onClick={_ => close()}>
@@ -52,22 +52,22 @@ let make = (~close) => {
     <p>
       "(This isn't "->React.string
       <em> "all"->React.string </em>
-      {" possible pairings, but for brevity we'll stick to this list. "
-       ++ "In practice, your list will usually be much longer.)"
-       |> React.string}
+      {| possible pairings, but for brevity we'll stick to this list.
+       In practice, your list will usually be much longer.)|}
+      ->React.string
     </p>
     <p>
       "Next, you will need to determine the "->React.string
       <em> "weight"->React.string </em>
-      {" of each pairing. This is a floating-point number that indicates how "
-       ++ "desirable that pairing is."
-       |> React.string}
+      {| of each pairing. This is a floating-point number that indicates how
+       desirable that pairing is.|}
+      ->React.string
     </p>
-    <table style=Css.(style([margin(`auto)]))>
+    <table style=Css.(style([margin(`auto), borderCollapse(`collapse)]))>
       <tbody>
         <tr>
-          <th colSpan=2> "Pair"->React.string </th>
-          <th> "Weight"->React.string </th>
+          <th colSpan=2 scope="col"> "Pair"->React.string </th>
+          <th scope="col"> "Weight"->React.string </th>
         </tr>
         {[|
            ("Mary", "Joseph", 40.),
@@ -84,47 +84,55 @@ let make = (~close) => {
          |]
          ->Array.map(((i, j, w)) =>
              <tr key={i ++ "+" ++ j}>
-               <td> i->React.string </td>
-               <td> j->React.string </td>
-               <td> {w->Js.String.make->React.string} </td>
+               <td style=Css.(style([padding2(~v=px(4), ~h=px(8))]))>
+                 i->React.string
+               </td>
+               <td style=Css.(style([padding2(~v=px(4), ~h=px(8))]))>
+                 j->React.string
+               </td>
+               <td style=Css.(style([padding2(~v=px(4), ~h=px(8))]))>
+                 {w->Js.String.make->React.string}
+               </td>
              </tr>
            )
          ->React.array}
       </tbody>
     </table>
     <p>
-      "Alternatively, we can lay it out on a table like this:"->React.string
+      "Alternatively, we can lay it out on a cross-table like this:"
+      ->React.string
     </p>
-    <GraphTable.Table
-      graph
-      vertices
-      mates={Blossom.Match.String.make([])}
-      editEdge
-      editPerson
-      disabled=true
-      style=Css.(style([margin(`auto)]))
-    />
+    <div style=Css.(style([overflowX(`scroll)]))>
+      <GraphTable.Table
+        graph
+        vertices
+        mates={Blossom.Match.String.make([])}
+        editEdge
+        editVertex
+        disabled=true
+        style=Css.(style([margin(`auto)]))
+      />
+    </div>
     <p>
-      {"In graph theory, each of the people is a \"vertex,\" and each pair of "
-       ++ "people is an \"edge.\" Another way to visualize it is like this:"
-       |> React.string}
+      {|In graph theory, each of the people is a "vertex," and the
+        connection between each pair of people is an "edge." Another way
+        to visualize it is like this:|}
+      ->React.string
     </p>
     <ForceGraph
       graph
       mates={Blossom.Match.String.make([])}
       width=400
       height=400
-      style=Css.(style([margin(`auto)]))
-    />
-    <p className="font-small center-text">
+      style=Css.(style([margin(`auto)]))>
       "Tap or mouse-over a circle to see who it represents."->React.string
-    </p>
+    </ForceGraph>
     <p>
-      {"Now we let the algorithm work its magic. It will find a series of "
-       ++ "edges that have the highest possible combined weight, where no "
-       ++ "vertex is listed twice, and where no vertex is without a mate. In "
-       ++ "this example, the result is:"
-       |> React.string}
+      {|Now we let the algorithm work its magic. It will find a series of
+        edges that have the highest possible combined weight, where no
+        vertex is listed twice, and where no vertex is without a mate. In
+        this example, the result is:|}
+      ->React.string
     </p>
     <ul>
       {[|
@@ -143,26 +151,27 @@ let make = (~close) => {
       mates={graph->Graph.toList->Blossom.Match.String.make}
       height=400
       width=400
-      style=Css.(style([margin(`auto)]))
-    />
+      style=Css.(style([margin(`auto)]))>
+      "Tap or mouse-over a circle to see who it represents."->React.string
+    </ForceGraph>
     <p>
-      {"Note that we couldn't use the edge with the highest weight because "
-       ++ "choosing it would leave another vertex with no connections. We also "
-       ++ "have to use the two edges with the lowest weights because we're "
-       ++ "committed to matching as many vertices as possible."
-       |> React.string}
+      {|Note that we couldn't use the edge with the highest weight because
+        choosing it would leave another vertex with no connections. We also
+        have to use the two edges with the lowest weights because we're
+        committed to matching as many vertices as possible.|}
+      ->React.string
     </p>
     <p>
-      {"As you can see, finding the maximum weighted matching is often "
-       ++ "unintuitive. Imagine how much more difficult this becomes when you "
-       ++ "have dozens, or hundreds, of people, and we could potentially match "
-       ++ "every person with anyone else!"
-       |> React.string}
+      {|As you can see, finding the maximum weighted matching is often
+        unintuitive. Imagine how much more difficult this becomes when you
+        have dozens, or hundreds, of people, and we could potentially match
+        every person with anyone else!|}
+      ->React.string
     </p>
     <p>
-      {"Fortunately, the algorithm here figures it out for us almost "
-       ++ "instantly. Try it out with some different data! It's powered by "
-       |> React.string}
+      {|Fortunately, the algorithm here figures it out for us almost
+        instantly. Try it out with some different data! It's powered by |}
+      ->React.string
       <a href="https://github.com/johnridesabike/re-blossom" target="_blank">
         "this implementation of the blossom algorithm"->React.string
       </a>

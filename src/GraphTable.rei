@@ -3,7 +3,7 @@ module Table: {
   let make:
     (
       ~vertices: array(string),
-      ~editPerson: string => unit,
+      ~editVertex: string => unit,
       ~editEdge: (string, string, option(float)) => unit,
       ~mates: Blossom.Match.t(string, Blossom.Match.String.Cmp.identity),
       ~graph: Graph.t,

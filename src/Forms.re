@@ -1,6 +1,6 @@
 open Belt;
 
-module PersonForm = [%form
+module VertexForm = [%form
   type input = {
     name: string,
     delete: bool,
@@ -19,7 +19,7 @@ module PersonForm = [%form
           Error(
             "Name \""
             ++ name
-            ++ "\" is already taken. Delete that person first.",
+            ++ "\" is already taken. Delete that vertex first.",
           )
         | _ => Ok(name)
         },
@@ -66,11 +66,11 @@ let useAutoFocus = () => {
   focused;
 };
 
-module PersonEditor = {
+module VertexEditor = {
   [@react.component]
   let make = (~dispatch, ~onSubmit, ~name, ~names) => {
     let focused = useAutoFocus();
-    open PersonForm;
+    open VertexForm;
     let form =
       useForm(
         ~initialInput={
@@ -148,11 +148,11 @@ module PersonEditor = {
   };
 };
 
-module PersonAdder = {
+module VertexAdder = {
   [@react.component]
   let make = (~dispatch, ~onSubmit, ~names) => {
     let focused = useAutoFocus();
-    open PersonForm;
+    open VertexForm;
     let form =
       useForm(
         ~initialInput={
@@ -174,7 +174,7 @@ module PersonAdder = {
         form.submit();
       }}>
       <label className="dialog__label">
-        <p className="font-small"> "Add person"->React.string </p>
+        <p className="font-small"> "Name vertex:"->React.string </p>
         <input
           type_="text"
           value={form.input.name}

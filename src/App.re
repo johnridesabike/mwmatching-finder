@@ -38,22 +38,22 @@ module HowTo = {
   let make = () =>
     <Toggleable title="How to use the table">
       <p>
-        {"Each cell represents an edge (a link) between two people. "
-         ++ "A number indicates the weight of the edge. A blank cell "
-         ++ "indicates no edge exists."
+        {"Each cell represents an edge (a link) between two vertices "
+         ++ "(e.g., people). A number indicates the weight of the edge. A "
+         ++ "blank cell indicates no edge exists."
          |> React.string}
       </p>
       <p>
         "An edge highlighted in "->React.string
         <span className="color-orange"> "orange"->React.string </span>
-        {" has been chosen for matching. The people connected by that "
+        {" has been chosen for matching. The vertices connected by that "
          ++ "edge are mated."
          |> React.string}
       </p>
       <p>
         {"The blossom algorithm will find the path (a set of mates) "
          ++ "that has the highest combined weight while including as "
-         ++ "highest number of people."
+         ++ "highest number of vertices."
          |> React.string}
       </p>
       <p>
@@ -76,73 +76,102 @@ module Credits = {
           <a href="https://johnridesa.bike/"> "John Jackson"->React.string </a>
         </p>
         <h3> "Software"->React.string </h3>
-        <p>
-          <a href="https://nodejs.org/en/">
-            <Icons.NodeJs style=Css.(style([height(em(1.))])) />
-            "Node.js"->React.string
-          </a>
-        </p>
-        <p>
-          <a href="https://reactjs.org/">
-            <Icons.React style=Css.(style([height(em(1.))])) />
-            {j|React|j}->React.string
-          </a>
-        </p>
-        <p>
-          <a href="https://reasonml.github.io/">
-            <Icons.Reason style=Css.(style([height(em(1.))])) />
-            {j|Reason|j}->React.string
-          </a>
-        </p>
-        <p>
-          <a href="https://github.com/johnridesabike/re-blossom">
-            {j|🌺 re-blossom|j}->React.string
-          </a>
-        </p>
-        <p>
-          <a href="https://d3js.org/">
-            <Icons.D3 style=Css.(style([height(em(1.))])) />
-            "D3.js"->React.string
-          </a>
-        </p>
-        <p>
-          <a href="https://bucklescript.github.io/">
-            {j|BuckleScript|j}->React.string
-          </a>
-        </p>
-        <p>
-          <a href="https://github.com/MinimaHQ/re-formality">
-            "Formality"->React.string
-          </a>
-        </p>
-        <p>
-          <a href="https://localforage.github.io/localForage/">
-            "LocalForage"->React.string
-          </a>
-        </p>
-        <p>
-          <a href="https://github.com/reasonml-labs/bs-css">
-            "bs-css"->React.string
-          </a>
-        </p>
-        <p>
-          <a href="https://github.com/aantron/promise">
-            "Reason Promise"->React.string
-          </a>
-        </p>
-        <p>
-          <a href="https://github.com/glennsl/bs-json">
-            "bs-json"->React.string
-          </a>
-        </p>
-        <p> <a href="https://parceljs.org/"> "Parcel"->React.string </a> </p>
-        <p>
-          <a href="https://github.com/">
-            "git + "->React.string
-            <Icons.GitHub style=Css.(style([height(em(1.))])) />
-            "GitHub"->React.string
-          </a>
-        </p>
+        <ul
+          style=Css.(
+            style([
+              columnCount(count(2)),
+              maxWidth(px(320)),
+              margin(`auto),
+              padding(px(0)),
+              listStyleType(`none),
+            ])
+          )>
+          <li>
+            <a href="https://nodejs.org/en/">
+              <Icons.NodeJs style=Css.(style([height(em(1.))])) />
+              "Node.js"->React.string
+            </a>
+          </li>
+          <li>
+            <a href="https://reactjs.org/">
+              <Icons.React style=Css.(style([height(em(1.))])) />
+              {j|React|j}->React.string
+            </a>
+          </li>
+          <li>
+            <a href="https://reasonml.github.io/">
+              <Icons.Reason style=Css.(style([height(em(1.))])) />
+              {j|Reason|j}->React.string
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/johnridesabike/re-blossom">
+              {j|🌺 re-blossom|j}->React.string
+            </a>
+          </li>
+          <li>
+            <a href="https://d3js.org/">
+              <Icons.D3 style=Css.(style([height(em(1.))])) />
+              "D3.js"->React.string
+            </a>
+          </li>
+          <li>
+            <a href="https://bucklescript.github.io/">
+              {j|BuckleScript|j}->React.string
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/MinimaHQ/re-formality">
+              "Formality"->React.string
+            </a>
+          </li>
+          <li>
+            <a href="https://localforage.github.io/localForage/">
+              "LocalForage"->React.string
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/reasonml-labs/bs-css">
+              "bs-css"->React.string
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/aantron/promise">
+              "Reason Promise"->React.string
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/glennsl/bs-json">
+              "bs-json"->React.string
+            </a>
+          </li>
+          <li>
+            <a href="https://parceljs.org/"> "Parcel"->React.string </a>
+          </li>
+          <li>
+            <a href="https://github.com/">
+              "git + "->React.string
+              <Icons.GitHub style=Css.(style([height(em(1.))])) />
+              "GitHub"->React.string
+            </a>
+          </li>
+          <li>
+            <a href="https://reacttraining.com/reach-ui/">
+              "Reach UI"->React.string
+            </a>
+          </li>
+          <li>
+            <a href="https://simpleicons.org/">
+              <Icons.SimpleIcons style=Css.(style([height(em(1.))])) />
+              "Simple Icons"->React.string
+            </a>
+          </li>
+          <li>
+            <a href="https://feathericons.com/">
+              "Feather icons"->React.string
+            </a>
+          </li>
+        </ul>
       </div>
     </Toggleable>;
 };
@@ -191,6 +220,11 @@ module Main = {
         <p>
           "Copyright \xA9 2020 "->React.string
           <a href="https://johnridesa.bike/"> "John Jackson"->React.string </a>
+        </p>
+        <p>
+          <a href="https://github.com/johnridesabike/mwmatching-finder">
+            "Browse the source"->React.string
+          </a>
         </p>
         <p>
           "Powered by: "->React.string

@@ -44,6 +44,7 @@ input[type="submit"] {
     border-width: 1px;
     border-color: var(--color__selection);
     font-weight: 300;
+    padding: 4px 12px;
 }
 
 button:active,
@@ -110,6 +111,8 @@ h1 {
     border-width: 1px;
     border-color: var(--color__foreground);
     margin: 1em auto;
+    padding-bottom: 8px;
+    width: 80vw;
 }
 
 h2 {
@@ -160,6 +163,7 @@ th {
     margin: 1em 0;
     flex-flow: column;
     text-align: center;
+    align-items: center;
 }
 
 .toolbar__item {
@@ -172,7 +176,7 @@ th {
 }
 
 .how-to {
-    padding: 0 4px;
+    padding: 0 8px;
 }
 
 .footer {
@@ -183,6 +187,7 @@ th {
     flex-flow: column;
     align-items: center;
     padding: 0 4px;
+    margin-top: 24px;
 }
 
 .graph-table-wrapper {
@@ -287,9 +292,13 @@ th {
     color: var(--color__foreground);
     border-radius: 8px;
     box-shadow: 0 0 24px 0 rgba(10, 10, 10, 1);
+    padding: 8px;
+    width: 320px;
+    margin: 48px auto;
+    overflow-x: hidden;
 }
 
-.dialog__edit {
+[data-reach-dialog-content].dialog__edit {
     width: 192px;
     max-width: 50vw;
 }
@@ -312,8 +321,17 @@ th {
     border-color: var(--color__red);
 }
 
+.force-graph__caption {
+    font-size: var(--font__small);
+    text-align: center;
+}
+
 /* Tablet-portrait and up */
 @media screen and (min-width: 600px) {
+    h1 {
+        width: 70vw;
+    }
+
     .toolbar {
         flex-flow: row;
     }
@@ -326,11 +344,16 @@ th {
         flex-flow: row;
         justify-content: space-between;
     }
+
+    [data-reach-dialog-content] {
+        padding: 24px;
+        width: 70vw;
+        margin: 10vh auto;
+    }
 }
 
 /* Tablet-landscape and up */
 @media screen and (min-width: 900px) {
-    h1,
     .footer,
     .how-to {
         width: 768px;
@@ -339,6 +362,10 @@ th {
 
     .toolbar {
         flex-wrap: wrap;
+    }
+
+    .how-to {
+        padding: 0;
     }
 
     .layout {
@@ -355,6 +382,11 @@ th {
 @media screen and (min-width: 1200px) {
     .force-graph {
         width: 400px;
+    }
+
+    [data-reach-dialog-content] {
+        padding: 48px;
+        width: 50vw;
     }
 }
 

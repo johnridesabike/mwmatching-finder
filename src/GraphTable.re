@@ -2,8 +2,8 @@ open Belt;
 
 type dialog =
   | Closed
-  | EditingPerson(string)
-  | NewPerson
+  | EditingVertex(string)
+  | NewVertex
   | EditingEdge(string, string, option(float))
   | Reset;
 
@@ -25,7 +25,7 @@ module Table = {
   let make =
       (
         ~vertices,
-        ~editPerson,
+        ~editVertex,
         ~editEdge,
         ~mates,
         ~graph,
@@ -37,7 +37,9 @@ module Table = {
     <table className="graph-table" style>
       <tbody>
         <tr>
-          <th className="graph-table__corner font-small"> React.null </th>
+          <th className="graph-table__corner font-small">
+            React.null
+          </th>
           {vertices
            ->Array.reverse
            ->Array.slice(~len=verticesIndices, ~offset=0)
@@ -45,7 +47,7 @@ module Table = {
                <th key=p className="graph-table__top-name" scope="col">
                  <button
                    className="graph-table__name-button"
-                   onClick={_ => editPerson(p)}
+                   onClick={_ => editVertex(p)}
                    disabled>
                    <div className="vertical-lr"> p->React.string </div>
                  </button>
@@ -60,7 +62,7 @@ module Table = {
                <th className="graph-table__side-name" scope="row">
                  <button
                    className="graph-table__name-button"
-                   onClick={_ => editPerson(i)}
+                   onClick={_ => editVertex(i)}
                    disabled>
                    i->React.string
                  </button>
@@ -89,20 +91,22 @@ module Table = {
                          | None =>
                            <button
                              disabled
+                             title="Edge not set."
                              className="graph-table__button"
                              onClick={_ => editEdge(i, j, None)}>
                              <VisuallyHidden>
-                               (if (mated) {"Mated. "} else {""})->React.string
+                               (mated ? "Mated. " : "")->React.string
                                {j|Set weight for $i and $j.|j}->React.string
                              </VisuallyHidden>
                            </button>
                          | Some(weight) =>
                            <button
                              disabled
+                             title={mated ? "Mated. " : "Not mated."}
                              className="graph-table__button mated"
                              onClick={_ => editEdge(i, j, Some(weight))}>
                              <VisuallyHidden>
-                               (if (mated) {"Mated. "} else {""})->React.string
+                               (mated ? "Mated. " : "")->React.string
                                {j|Set weight for $i and $j.|j}->React.string
                              </VisuallyHidden>
                              {weight->Js.String.make->React.string}
@@ -157,9 +161,12 @@ let make =
   let closeDialog = _ => setDialog(setClosed);
   <div style className="graph-table-wrapper">
     <div className="toolbar">
+      <button className="toolbar__item" onClick={_ => setDialog(_ => Reset)}>
+        "New graph"->React.string
+      </button>
       <button
-        className="toolbar__item" onClick={_ => setDialog(_ => NewPerson)}>
-        "Add person"->React.string
+        className="toolbar__item" onClick={_ => setDialog(_ => NewVertex)}>
+        "Add vertex"->React.string
       </button>
       <label>
         "Maximum cardinality "->React.string
@@ -203,7 +210,7 @@ let make =
            vertices
            mates
            graph
-           editPerson={p => setDialog(_ => EditingPerson(p))}
+           editVertex={p => setDialog(_ => EditingVertex(p))}
            editEdge={(i, j, w) => setDialog(_ => EditingEdge(i, j, w))}
          />
          {switch (Map.size(graph.Graph.edges)) {
@@ -213,28 +220,22 @@ let make =
             </p>
           | _ => React.null
           }}
-         <div className="toolbar">
-           <button
-             className="toolbar__item" onClick={_ => setDialog(_ => Reset)}>
-             "New graph"->React.string
-           </button>
-         </div>
        </React.Fragment>
      }}
     {switch (dialog) {
      | Closed => React.null
-     | EditingPerson(person) =>
+     | EditingVertex(person) =>
        <Dialog onDismiss=closeDialog ariaLabel={"Editing person: " ++ person}>
-         <Forms.PersonEditor
+         <Forms.VertexEditor
            dispatch
            name=person
            names={graph.Graph.vertices}
            onSubmit=closeDialog
          />
        </Dialog>
-     | NewPerson =>
+     | NewVertex =>
        <Dialog onDismiss=closeDialog ariaLabel="Adding a new person">
-         <Forms.PersonAdder
+         <Forms.VertexAdder
            dispatch
            names={graph.Graph.vertices}
            onSubmit=closeDialog

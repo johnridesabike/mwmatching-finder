@@ -2,10 +2,10 @@ module Table: {
   [@react.component]
   let make:
     (
-      ~vertices: array(string),
-      ~editVertex: string => unit,
-      ~editEdge: (string, string, option(float)) => unit,
-      ~mates: Blossom.Match.t(string, Blossom.Match.String.Cmp.identity),
+      ~vertices: array(Graph.Vertex.t),
+      ~editVertex: Graph.Vertex.t => unit,
+      ~editEdge: (Graph.Vertex.t, Graph.Vertex.t, option(float)) => unit,
+      ~mates: Blossom.Match.t(Graph.Vertex.t, Graph.Vertex.Cmp.identity),
       ~graph: Graph.t,
       ~disabled: bool=?,
       ~style: ReactDOMRe.Style.t=?
@@ -16,7 +16,7 @@ module Table: {
 [@react.component]
 let make:
   (
-    ~vertices: array(string),
+    ~vertices: array(Graph.Vertex.t),
     ~graph: Graph.t,
     ~dispatch: Graph.action => unit,
     ~cardinality: Blossom.Match.cardinality,
@@ -24,7 +24,7 @@ let make:
                        Blossom.Match.cardinality => Blossom.Match.cardinality
                      ) =>
                      unit,
-    ~mates: Blossom.Match.t(string, Blossom.Match.String.Cmp.identity),
+    ~mates: Blossom.Match.t(Graph.Vertex.t, Graph.Vertex.Cmp.identity),
     ~style: ReactDOMRe.Style.t=?
   ) =>
   React.element;

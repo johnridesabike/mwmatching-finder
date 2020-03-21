@@ -1,5 +1,7 @@
+open Belt;
+
 let a =
-  Graph.fromList([
+  [
     ("Mary", "Joseph", 40.),
     ("Mary", "Michael", 40.),
     ("Joseph", "Michael", 60.),
@@ -11,4 +13,11 @@ let a =
     ("Peter", "John", 10.),
     ("Paul", "James", 10.),
     ("Gabriel", "Andrew", 30.),
-  ]);
+  ]
+  ->List.keepMap(((i, j, w)) =>
+      switch (Graph.Vertex.(make(i), make(j))) {
+      | (Some(i), Some(j)) => Some((i, j, w))
+      | _ => None
+      }
+    )
+  ->Graph.fromList;

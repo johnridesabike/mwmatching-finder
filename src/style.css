@@ -68,6 +68,11 @@ input[type="submit"]:disabled {
     transform: none;
 }
 
+button:disabled:hover,
+input[type="submit"]:disabled:hover {
+    border-color: transparent;
+}
+
 input:disabled {
     background-color: var(--color__background);
     color: var(--color__comment);
@@ -208,14 +213,14 @@ th {
     height: 100%;
     width: 100%;
     background: none;
-    border: none;
+    border-style: solid;
+    border-width: 1px;
+    border-color: transparent;
     color: var(--color__foreground);
     font-size: var(--font__medium);
 }
 
 .graph-table__cell-mated .graph-table__button {
-    border-style: solid;
-    border-width: 1px;
     border-color: var(--color__green);
 }
 

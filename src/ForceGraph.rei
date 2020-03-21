@@ -2,7 +2,7 @@
 let make:
   (
     ~graph: Graph.t,
-    ~mates: Blossom.Match.t(string, Blossom.Match.String.Cmp.identity),
+    ~mates: Graph.Mates.t,
     ~width: int,
     ~height: int,
     ~children: React.element=?,

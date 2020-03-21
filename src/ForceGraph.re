@@ -20,9 +20,9 @@ let calcLinkDistance = (linkCount, ~height, ~width) => {
 };
 
 type nodeFields = {
-  id: string,
+  id: Graph.Vertex.t,
   nodeColor: string,
-  mate: option(string),
+  mate: option(Graph.Vertex.t),
 };
 
 type linkFields = {
@@ -128,14 +128,14 @@ module SvgGraph = {
 
   type selected =
     | NoneSelected
-    | Single(string)
-    | Mated(string, string);
+    | Single(Graph.Vertex.t)
+    | Mated(Graph.Vertex.t, Graph.Vertex.t);
 
   type action =
     | Unselect
     | Select({
-        vertex: string,
-        mate: option(string),
+        vertex: Graph.Vertex.t,
+        mate: option(Graph.Vertex.t),
       });
 
   let selectionReducer = (_state, action) =>
@@ -175,7 +175,11 @@ module SvgGraph = {
            links,
            (Link.{source, target, data: {linkColor, opacity, weight}}) =>
            <line
-             key={source.Node.data.id ++ "+" ++ target.Node.data.id}
+             key={
+               source.Node.data.id->Graph.Vertex.toString
+               ++ "+"
+               ++ target.Node.data.id->Graph.Vertex.toString
+             }
              stroke=linkColor
              strokeWidth={weight->sqrt->max(1.)->min(20.)->Js.String.make}
              strokeLinecap="round"
@@ -194,7 +198,7 @@ module SvgGraph = {
       <g className="graph-nodes">
         {Array.map(nodes, (Node.{x, y, data: {nodeColor, id, mate}, _}) =>
            <g
-             key=id
+             key={Graph.Vertex.toString(id)}
              onMouseOver={_ => setSelected(Select({vertex: id, mate}))}
              onTouchStart={_ => setSelected(Select({vertex: id, mate}))}
              onClick={_ => setSelected(Select({vertex: id, mate}))}
@@ -207,14 +211,14 @@ module SvgGraph = {
                stroke={
                  switch (selected) {
                  | Mated(id1, _)
-                 | Single(id1) when id1 == id => Color.orange
-                 | Mated(_, id2) when id2 == id => Color.purple
+                 | Single(id1) when Graph.Vertex.eq(id1, id) => Color.orange
+                 | Mated(_, id2) when Graph.Vertex.eq(id2, id) => Color.purple
                  | Single(_)
                  | Mated(_, _)
                  | NoneSelected => Color.selection
                  }
                }>
-               <title> id->React.string </title>
+               <title> id->Graph.Vertex.toElement </title>
              </circle>
            </g>
          )
@@ -230,16 +234,16 @@ module SvgGraph = {
        | Single(id) =>
          <InfoBox offsetX=128 offsetY=height>
            <Legend.Circle offsetY=0 fill=Color.pink stroke=Color.orange>
-             id->React.string
+             id->Graph.Vertex.toElement
            </Legend.Circle>
          </InfoBox>
        | Mated(id1, id2) =>
          <InfoBox offsetX=128 offsetY=height>
            <Legend.Circle offsetY=0 fill=Color.cyan stroke=Color.orange>
-             id1->React.string
+             id1->Graph.Vertex.toElement
            </Legend.Circle>
            <Legend.Circle offsetY=24 fill=Color.cyan stroke=Color.purple>
-             id2->React.string
+             id2->Graph.Vertex.toElement
            </Legend.Circle>
          </InfoBox>
        | NoneSelected => React.null
@@ -272,12 +276,12 @@ let make =
     ->List.map(((i, j, weight)) => {
         let (linkColor, opacity) =
           switch (Blossom.Match.get(mates, i)) {
-          | Some(mate) when mate == j => (Color.green, 1.0)
+          | Some(mate) when Graph.Vertex.eq(mate, j) => (Color.green, 1.0)
           | _ => (Color.comment, 0.5)
           };
         MakeLink.make(
-          ~source=i,
-          ~target=j,
+          ~source=Graph.Vertex.toString(i),
+          ~target=Graph.Vertex.toString(j),
           ~data={weight, linkColor, opacity},
         );
       })
@@ -293,7 +297,7 @@ let make =
   let forceLink =
     links
     ->Links.make
-    ->Links.id(d => d.Node.data.id)
+    ->Links.id(d => Graph.Vertex.toString(d.Node.data.id))
     ->Links.distance(_ =>
         links->Array.size->calcLinkDistance(~height, ~width)
       );

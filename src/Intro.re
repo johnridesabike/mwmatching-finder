@@ -6,6 +6,7 @@ let editEdge = (_, _, _) => ();
 
 [@react.component]
 let make = (~close) => {
+  let mates = Graph.Mates.useMates(graph);
   <article className="intro">
     <h2> "Welcome to the maximum weighted matching finder"->React.string </h2>
     <p>
@@ -106,7 +107,7 @@ let make = (~close) => {
       <GraphTable.Table
         graph
         vertices
-        mates={Blossom.Match.String.make([])}
+        mates=Graph.Mates.empty
         editEdge
         editVertex
         disabled=true
@@ -121,7 +122,7 @@ let make = (~close) => {
     </p>
     <ForceGraph
       graph
-      mates={Blossom.Match.String.make([])}
+      mates=Graph.Mates.empty
       width=400
       height=400
       style=Css.(style([margin(`auto)]))>
@@ -147,11 +148,7 @@ let make = (~close) => {
     </ul>
     <p> "Or when we visualize it:"->React.string </p>
     <ForceGraph
-      graph
-      mates={graph->Graph.toList->Blossom.Match.String.make}
-      height=400
-      width=400
-      style=Css.(style([margin(`auto)]))>
+      graph mates height=400 width=400 style=Css.(style([margin(`auto)]))>
       "Tap or mouse-over a circle to see who it represents."->React.string
     </ForceGraph>
     <p>

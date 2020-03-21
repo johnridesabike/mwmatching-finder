@@ -4,24 +4,29 @@ module VertexForm = [%form
   type input = {
     name: string,
     delete: bool,
-    oldName: string,
-    existingNames: Set.String.t,
+    oldName: Graph.Vertex.t,
+    existingNames: Graph.Vertex.Set.t,
   };
-  type output = input;
+  type output = {
+    name: Graph.Vertex.t,
+    delete: bool,
+    oldName: Graph.Vertex.t,
+    existingNames: Graph.Vertex.Set.t,
+  };
   let validators = {
     name: {
       strategy: OnFirstBlur,
       validate: ({name, oldName, existingNames, _}) =>
-        switch (name) {
-        | "" => Error("Name cannot be blank.")
-        | name when name == oldName => Ok(name)
-        | name when Set.String.has(existingNames, name) =>
+        switch (Graph.Vertex.make(name)) {
+        | None => Error("Name cannot be blank.")
+        | Some(name) when Graph.Vertex.eq(name, oldName) => Ok(name)
+        | Some(name) when Graph.Vertex.Set.has(existingNames, name) =>
           Error(
             "Name \""
-            ++ name
+            ++ Graph.Vertex.toString(name)
             ++ "\" is already taken. Delete that vertex first.",
           )
-        | _ => Ok(name)
+        | Some(name) => Ok(name)
         },
     },
     delete: None,
@@ -74,7 +79,7 @@ module VertexEditor = {
     let form =
       useForm(
         ~initialInput={
-          name,
+          name: Graph.Vertex.toString(name),
           oldName: name,
           delete: false,
           existingNames: names,
@@ -97,12 +102,15 @@ module VertexEditor = {
       }}>
       <label className="dialog__label">
         <p className="font-small">
-          {"Rename " ++ form.input.oldName ++ ":" |> React.string}
+          {"Rename "
+           ++ Graph.Vertex.toString(form.input.oldName)
+           ++ ":"
+           |> React.string}
         </p>
         <input
           type_="text"
           value={form.input.name}
-          disabled={form.submitting || form.input.delete}
+          disabled={form.submitting}
           onBlur={_ => form.blurName()}
           size=10
           ref={ReactDOMRe.Ref.domRef(focused)}
@@ -115,7 +123,7 @@ module VertexEditor = {
       <p>
         <label className="dialog__label">
           <span className="font-small">
-            {"Delete " ++ name ++ ": " |> React.string}
+            {"Delete " ++ Graph.Vertex.toString(name) ++ ": " |> React.string}
           </span>
           <input
             type_="checkbox"
@@ -157,7 +165,7 @@ module VertexAdder = {
       useForm(
         ~initialInput={
           name: "",
-          oldName: "",
+          oldName: Graph.Vertex.empty,
           delete: false,
           existingNames: names,
         },
@@ -229,9 +237,9 @@ module EdgeSetter = {
       <label>
         <p>
           "Set the weight for the edge betweeen "->React.string
-          <strong> i->React.string </strong>
+          <strong> {i->Graph.Vertex.toString->React.string} </strong>
           " and "->React.string
-          <strong> j->React.string </strong>
+          <strong> {j->Graph.Vertex.toString->React.string} </strong>
           "."->React.string
         </p>
         <input

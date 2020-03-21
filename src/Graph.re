@@ -2,6 +2,34 @@ open Belt;
 module M = Map;
 module S = Set;
 
+module Vertex = {
+  type t = string;
+  type vertex = t;
+
+  let make =
+    fun
+    | "" => None
+    | s => Some(s);
+
+  external toString: t => string = "%identity";
+
+  external toElement: t => React.element = "%identity";
+
+  let empty = "";
+
+  let cmp: (t, t) => int = compare;
+
+  let eq: (t, t) => bool = (==);
+
+  module Cmp =
+    Id.MakeComparable({
+      type nonrec t = t;
+      let cmp = cmp;
+    });
+
+  module Set = Set.String;
+};
+
 module Edge = {
   type t = (string, string);
   module Cmp =
@@ -29,6 +57,7 @@ module Edge = {
   let decode: Js.Json.t => t = Json.Decode.(tuple2(string, string));
 };
 
+[@bs.deriving accessors]
 type t = {
   /* A map of vertices to their neighbors */
   vertices: S.String.t,
@@ -59,6 +88,8 @@ let decode = json =>
 let emptyEdges = M.make(~id=(module Edge.Cmp));
 
 let empty = {vertices: S.String.empty, edges: emptyEdges};
+
+let edgeCount = ({edges, _}) => M.size(edges);
 
 type action =
   | AddVertex(string)
@@ -119,22 +150,30 @@ let verticesToArray = ({vertices, _}) => S.String.toArray(vertices);
 
 let getEdge = ({edges, _}, i, j) => M.get(edges, Edge.make(i, j));
 
-let useMates = (graph, cardinality) => {
-  let (matches, setMatches) =
-    React.useState(() => graph->toList->Blossom.Match.String.make);
-  React.useEffect2(
-    () => {
-      setMatches(state =>
-        switch (graph->toList->(Blossom.Match.String.make(~cardinality))) {
-        | exception e =>
-          Js.Console.error(e);
-          state;
-        | matches => matches
-        }
-      );
-      None;
-    },
-    (graph, cardinality),
-  );
-  matches;
+module Mates = {
+  type graph = t;
+  type t = Blossom.Match.t(Vertex.t, Vertex.Cmp.identity);
+
+  let blossom = Blossom.Match.make(~id=(module Vertex.Cmp), ~cmp=Vertex.cmp);
+
+  let empty = blossom([]);
+
+  let useMates = (~cardinality=`NotMax, graph) => {
+    let (matches, setMatches) = React.useState(() => graph->toList->blossom);
+    React.useEffect2(
+      () => {
+        setMatches(state =>
+          switch (graph->toList->(blossom(~cardinality))) {
+          | exception e =>
+            Js.Console.error(e);
+            state;
+          | matches => matches
+          }
+        );
+        None;
+      },
+      (graph, cardinality),
+    );
+    matches;
+  };
 };

@@ -4,8 +4,8 @@ module VertexEditor: {
     (
       ~dispatch: Graph.action => unit,
       ~onSubmit: unit => unit,
-      ~name: string,
-      ~names: Belt.Set.String.t
+      ~name: Graph.Vertex.t,
+      ~names: Graph.Vertex.Set.t
     ) =>
     React.element;
 };
@@ -16,7 +16,7 @@ module VertexAdder: {
     (
       ~dispatch: Graph.action => unit,
       ~onSubmit: unit => unit,
-      ~names: Belt.Set.String.t
+      ~names: Graph.Vertex.Set.t
     ) =>
     React.element;
 };
@@ -27,8 +27,8 @@ module EdgeSetter: {
     (
       ~dispatch: Graph.action => unit,
       ~onSubmit: unit => unit,
-      ~i: string,
-      ~j: string,
+      ~i: Graph.Vertex.t,
+      ~j: Graph.Vertex.t,
       ~w: option(float)
     ) =>
     React.element;

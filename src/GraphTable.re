@@ -2,9 +2,9 @@ open Belt;
 
 type dialog =
   | Closed
-  | EditingVertex(string)
+  | EditingVertex(Graph.Vertex.t)
   | NewVertex
-  | EditingEdge(string, string, option(float))
+  | EditingEdge(Graph.Vertex.t, Graph.Vertex.t, option(float))
   | Reset;
 
 let setClosed = _ => Closed;
@@ -37,19 +37,22 @@ module Table = {
     <table className="graph-table" style>
       <tbody>
         <tr>
-          <th className="graph-table__corner font-small">
-            React.null
-          </th>
+          <th className="graph-table__corner font-small"> React.null </th>
           {vertices
            ->Array.reverse
            ->Array.slice(~len=verticesIndices, ~offset=0)
            ->Array.map(p =>
-               <th key=p className="graph-table__top-name" scope="col">
+               <th
+                 key={Graph.Vertex.toString(p)}
+                 className="graph-table__top-name"
+                 scope="col">
                  <button
                    className="graph-table__name-button"
                    onClick={_ => editVertex(p)}
                    disabled>
-                   <div className="vertical-lr"> p->React.string </div>
+                   <div className="vertical-lr">
+                     p->Graph.Vertex.toElement
+                   </div>
                  </button>
                </th>
              )
@@ -58,13 +61,13 @@ module Table = {
         {vertices
          ->Array.slice(~len=verticesIndices, ~offset=0)
          ->Array.mapWithIndex((index, i) =>
-             <tr key=i>
+             <tr key={Graph.Vertex.toString(i)}>
                <th className="graph-table__side-name" scope="row">
                  <button
                    className="graph-table__name-button"
                    onClick={_ => editVertex(i)}
                    disabled>
-                   i->React.string
+                   i->Graph.Vertex.toElement
                  </button>
                </th>
                {vertices
@@ -72,15 +75,18 @@ module Table = {
                 ->Array.slice(~len=verticesIndices, ~offset=0)
                 ->Array.mapWithIndex((index', j) =>
                     if (verticesIndices - index' <= index) {
-                      <td key=j className="graph-table__null-cell" />;
+                      <td
+                        key={Graph.Vertex.toString(j)}
+                        className="graph-table__null-cell"
+                      />;
                     } else {
                       let mated =
                         switch (Blossom.Match.get(mates, i)) {
-                        | Some(j') when j == j' => true
+                        | Some(j') when Graph.Vertex.eq(j, j') => true
                         | _ => false
                         };
                       <td
-                        key=j
+                        key={Graph.Vertex.toString(j)}
                         className=Cn.(
                           make([
                             "graph-table__cell",
@@ -201,7 +207,7 @@ let make =
        </React.Fragment>
      | [|id|] =>
        <p>
-         <strong> id->React.string </strong>
+         <strong> id->Graph.Vertex.toElement </strong>
          " is alone. Add more people to start matching."->React.string
        </p>
      | vertices =>
@@ -213,7 +219,7 @@ let make =
            editVertex={p => setDialog(_ => EditingVertex(p))}
            editEdge={(i, j, w) => setDialog(_ => EditingEdge(i, j, w))}
          />
-         {switch (Map.size(graph.Graph.edges)) {
+         {switch (Graph.edgeCount(graph)) {
           | 0 =>
             <p>
               "Click a table cell to add an edge to the graph."->React.string
@@ -225,11 +231,13 @@ let make =
     {switch (dialog) {
      | Closed => React.null
      | EditingVertex(person) =>
-       <Dialog onDismiss=closeDialog ariaLabel={"Editing person: " ++ person}>
+       <Dialog
+         onDismiss=closeDialog
+         ariaLabel={"Editing person: " ++ Graph.Vertex.toString(person)}>
          <Forms.VertexEditor
            dispatch
            name=person
-           names={graph.Graph.vertices}
+           names={Graph.vertices(graph)}
            onSubmit=closeDialog
          />
        </Dialog>
@@ -237,7 +245,7 @@ let make =
        <Dialog onDismiss=closeDialog ariaLabel="Adding a new person">
          <Forms.VertexAdder
            dispatch
-           names={graph.Graph.vertices}
+           names={Graph.vertices(graph)}
            onSubmit=closeDialog
          />
        </Dialog>

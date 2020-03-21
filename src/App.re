@@ -38,30 +38,35 @@ module HowTo = {
   let make = () =>
     <Toggleable title="How to use the table">
       <p>
-        {"Each cell represents an edge (a link) between two vertices "
-         ++ "(e.g., people). A number indicates the weight of the edge. A "
-         ++ "blank cell indicates no edge exists."
-         |> React.string}
+        {|Each cell represents an edge (a link) between two vertices
+          (e.g., people). A number indicates the weight of the edge. A
+          blank cell indicates no edge exists.|}
+        ->React.string
       </p>
       <p>
         "An edge highlighted in "->React.string
         <span className="color-green"> "green"->React.string </span>
-        {" has been chosen for matching. The vertices connected by that "
-         ++ "edge are mated."
-         |> React.string}
+        {| has been chosen for matching. The vertices connected by that
+           edge are mated.|}
+        ->React.string
       </p>
       <p>
-        {"The blossom algorithm will find the path (a set of mates) "
-         ++ "that has the highest combined weight while including as "
-         ++ "highest number of vertices."
-         |> React.string}
+        {|The blossom algorithm will find the path (a set of mates)
+          that has the highest combined weight while including as
+          highest number of vertices.|}
+        ->React.string
       </p>
       <p>
         "Enabling "->React.string
         <em> "maximum cardinality"->React.string </em>
-        {" will tell the algorithm to only accept paths with everyone "
-         ++ "possible, even paths with dramatically lower weights."
-         |> React.string}
+        {| will tell the algorithm to only accept paths with everyone
+          possible, even paths with dramatically lower weights.|}
+        ->React.string
+      </p>
+      <p>
+        {|Edit an edge by clicking on its table cell. Edit a vertex by clicking
+         on its name.|}
+        ->React.string
       </p>
     </Toggleable>;
 };
@@ -202,7 +207,7 @@ module Main = {
     );
     let vertices = Graph.verticesToArray(graph);
     let (cardinality, setCardinality) = React.useState(() => `NotMax);
-    let mates = Graph.useMates(graph, cardinality);
+    let mates = Graph.Mates.useMates(graph, ~cardinality);
     <main role="main" className="main">
       <h1> {j|Maximum Weighted Matching Finder|j}->React.string </h1>
       <p style=Css.(style([textAlign(`center)]))>

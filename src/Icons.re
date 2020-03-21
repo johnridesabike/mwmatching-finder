@@ -51,11 +51,6 @@ module Reason =
     [@bs.module] external icon: simpleIcon = "simple-icons/icons/reason";
   });
 
-module React =
-  MakeSimpleIcon({
-    [@bs.module] external icon: simpleIcon = "simple-icons/icons/react";
-  });
-
 module D3 =
   MakeSimpleIcon({
     [@bs.module] external icon: simpleIcon = "simple-icons/icons/d3-dot-js";
@@ -74,4 +69,9 @@ module NodeJs =
 module SimpleIcons =
   MakeSimpleIcon({
     [@bs.module] external icon: simpleIcon = "simple-icons/icons/simpleicons";
+  });
+
+module React =
+  MakeSimpleIcon({
+    [@bs.module] external icon: simpleIcon = "simple-icons/icons/react";
   });

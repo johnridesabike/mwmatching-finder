@@ -1,15 +1,15 @@
 module ChevronLeft = {
-  [@bs.module "react-feather"] [@react.component]
+  [@bs.module "react-feather/dist/icons/chevron-left"] [@react.component]
   external make:
     (~className: string=?, ~style: ReactDOMRe.Style.t=?) => React.element =
-    "ChevronLeft";
+    "default";
 };
 
 module ChevronDown = {
-  [@bs.module "react-feather"] [@react.component]
+  [@bs.module "react-feather/dist/icons/chevron-down"] [@react.component]
   external make:
     (~className: string=?, ~style: ReactDOMRe.Style.t=?) => React.element =
-    "ChevronDown";
+    "default";
 };
 
 type simpleIcon = {

@@ -45,7 +45,7 @@ module HowTo = {
       </p>
       <p>
         "An edge highlighted in "->React.string
-        <span className="color-orange"> "orange"->React.string </span>
+        <span className="color-green"> "green"->React.string </span>
         {" has been chosen for matching. The vertices connected by that "
          ++ "edge are mated."
          |> React.string}

@@ -108745,8 +108745,8 @@ function App$HowTo(Props) {
     title: "How to use the table",
     children: null
   }, React.createElement("p", undefined, "Each cell represents an edge (a link) between two vertices (e.g., people). A number indicates the weight of the edge. A blank cell indicates no edge exists."), React.createElement("p", undefined, "An edge highlighted in ", React.createElement("span", {
-    className: "color-orange"
-  }, "orange"), " has been chosen for matching. The vertices connected by that edge are mated."), React.createElement("p", undefined, "The blossom algorithm will find the path (a set of mates) that has the highest combined weight while including as highest number of vertices."), React.createElement("p", undefined, "Enabling ", React.createElement("em", undefined, "maximum cardinality"), " will tell the algorithm to only accept paths with everyone possible, even paths with dramatically lower weights."));
+    className: "color-green"
+  }, "green"), " has been chosen for matching. The vertices connected by that edge are mated."), React.createElement("p", undefined, "The blossom algorithm will find the path (a set of mates) that has the highest combined weight while including as highest number of vertices."), React.createElement("p", undefined, "Enabling ", React.createElement("em", undefined, "maximum cardinality"), " will tell the algorithm to only accept paths with everyone possible, even paths with dramatically lower weights."));
 }
 
 function App$Credits(Props) {
@@ -109045,7 +109045,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50523" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51114" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

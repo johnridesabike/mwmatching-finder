@@ -143,8 +143,8 @@ th {
     text-align: center;
 }
 
-.color-orange {
-    color: var(--color__orange);
+.color-green {
+    color: var(--color__green);
 }
 
 .main {
@@ -216,7 +216,7 @@ th {
 .graph-table__cell-mated .graph-table__button {
     border-style: solid;
     border-width: 1px;
-    border-color: var(--color__orange);
+    border-color: var(--color__green);
 }
 
 .graph-table__button:disabled:hover,

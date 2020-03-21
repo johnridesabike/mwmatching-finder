@@ -101707,7 +101707,7 @@ var validators_name = {
     } else {
       return (
         /* Error */
-        Block.__(1, ["Name \"" + (name + "\" is already taken. Delete that person first.")])
+        Block.__(1, ["Name \"" + (name + "\" is already taken. Delete that vertex first.")])
       );
     }
   }
@@ -103218,7 +103218,7 @@ function Forms$PersonAdder(Props) {
     className: "dialog__label"
   }, React.createElement("p", {
     className: "font-small"
-  }, "Add person"), React.createElement("input", {
+  }, "Name vertex:"), React.createElement("input", {
     ref: focused,
     disabled: form.submitting,
     size: 10,
@@ -108278,7 +108278,7 @@ function GraphTable(Props) {
         editPerson: function editPerson(p) {
           return Curry._1(setDialog, function (param) {
             return (
-              /* EditingPerson */
+              /* EditingVertex */
               Block.__(0, [p])
             );
           });
@@ -108293,19 +108293,7 @@ function GraphTable(Props) {
         },
         mates: mates,
         graph: graph
-      }), match$1 !== 0 ? null : React.createElement("p", undefined, "Click a table cell to add an edge to the graph."), React.createElement("div", {
-        className: "toolbar"
-      }, React.createElement("button", {
-        className: "toolbar__item",
-        onClick: function onClick(param) {
-          return Curry._1(setDialog, function (param) {
-            return (
-              /* Reset */
-              2
-            );
-          });
-        }
-      }, "New graph")));
+      }), match$1 !== 0 ? null : React.createElement("p", undefined, "Click a table cell to add an edge to the graph."));
     } else {
       tmp = React.createElement(React.Fragment, {
         children: null
@@ -108333,7 +108321,7 @@ function GraphTable(Props) {
         break;
 
       case
-      /* NewPerson */
+      /* NewVertex */
       1:
         tmp$1 = React.createElement(GraphTable$Dialog, {
           children: React.createElement(Forms$BlossomPlayground.PersonAdder.make, {
@@ -108428,12 +108416,22 @@ function GraphTable(Props) {
     onClick: function onClick(param) {
       return Curry._1(setDialog, function (param) {
         return (
-          /* NewPerson */
+          /* Reset */
+          2
+        );
+      });
+    }
+  }, "New graph"), React.createElement("button", {
+    className: "toolbar__item",
+    onClick: function onClick(param) {
+      return Curry._1(setDialog, function (param) {
+        return (
+          /* NewVertex */
           1
         );
       });
     }
-  }, "Add person"), React.createElement("label", undefined, "Maximum cardinality ", React.createElement("input", {
+  }, "Add vertex"), React.createElement("label", undefined, "Maximum cardinality ", React.createElement("input", {
     className: "toolbar__item",
     checked: cardinality >= 3850884,
     type: "checkbox",
@@ -108528,8 +108526,12 @@ function Intro(Props) {
     [Css.margin(
     /* auto */
     -1065951377),
+    /* :: */
+    [Css.borderCollapse(
+    /* collapse */
+    -996847251),
     /* [] */
-    0])
+    0]])
   }, React.createElement("tbody", undefined, React.createElement("tr", undefined, React.createElement("th", {
     colSpan: 2
   }, "Pair"), React.createElement("th", undefined, "Weight")), Belt_Array.map([
@@ -108559,7 +108561,25 @@ function Intro(Props) {
     var i = param[0];
     return React.createElement("tr", {
       key: i + ("+" + j)
-    }, React.createElement("td", undefined, i), React.createElement("td", undefined, j), React.createElement("td", undefined, String(param[2])));
+    }, React.createElement("td", {
+      style: Css.style(
+      /* :: */
+      [Css.padding2(Css.px(4), Css.px(8)),
+      /* [] */
+      0])
+    }, i), React.createElement("td", {
+      style: Css.style(
+      /* :: */
+      [Css.padding2(Css.px(4), Css.px(8)),
+      /* [] */
+      0])
+    }, j), React.createElement("td", {
+      style: Css.style(
+      /* :: */
+      [Css.padding2(Css.px(4), Css.px(8)),
+      /* [] */
+      0])
+    }, String(param[2])));
   }))), React.createElement("p", undefined, "Alternatively, we can lay it out on a table like this:"), React.createElement("div", {
     style: Css.style(
     /* :: */
@@ -108584,7 +108604,7 @@ function Intro(Props) {
     -1065951377),
     /* [] */
     0])
-  })), React.createElement("p", undefined, "In graph theory, each of the people is a \"vertex,\" and each pair of people is an \"edge.\" Another way to visualize it is like this:"), React.createElement(ForceGraph$BlossomPlayground.make, {
+  })), React.createElement("p", undefined, "In graph theory, each of the people is a \"vertex,\" and the connection between each pair of people is an \"edge.\" Another way to visualize it is like this:"), React.createElement(ForceGraph$BlossomPlayground.make, {
     graph: SampleData$BlossomPlayground.a,
     mates: Match$Blossom.$$String.make(undefined,
     /* [] */
@@ -108616,7 +108636,9 @@ function Intro(Props) {
     -1065951377),
     /* [] */
     0])
-  }), React.createElement("p", undefined, "Note that we couldn't use the edge with the highest weight because choosing it would leave another vertex with no connections. We also have to use the two edges with the lowest weights because we're committed to matching as many vertices as possible."), React.createElement("p", undefined, "As you can see, finding the maximum weighted matching is often unintuitive. Imagine how much more difficult this becomes when you have dozens, or hundreds, of people, and we could potentially match every person with anyone else!"), React.createElement("p", undefined, "Fortunately, the algorithm here figures it out for us almost instantly. Try it out with some different data! It's powered by ", React.createElement("a", {
+  }), React.createElement("p", {
+    className: "font-small center-text"
+  }, "Tap or mouse-over a circle to see who it represents."), React.createElement("p", undefined, "Note that we couldn't use the edge with the highest weight because choosing it would leave another vertex with no connections. We also have to use the two edges with the lowest weights because we're committed to matching as many vertices as possible."), React.createElement("p", undefined, "As you can see, finding the maximum weighted matching is often unintuitive. Imagine how much more difficult this becomes when you have dozens, or hundreds, of people, and we could potentially match every person with anyone else!"), React.createElement("p", undefined, "Fortunately, the algorithm here figures it out for us almost instantly. Try it out with some different data! It's powered by ", React.createElement("a", {
     href: "https://github.com/johnridesabike/re-blossom",
     target: "_blank"
   }, "this implementation of the blossom algorithm"), "."), React.createElement("p", {
@@ -108714,9 +108736,9 @@ function App$HowTo(Props) {
   return React.createElement(App$Toggleable, {
     title: "How to use the table",
     children: null
-  }, React.createElement("p", undefined, "Each cell represents an edge (a link) between two people. A number indicates the weight of the edge. A blank cell indicates no edge exists."), React.createElement("p", undefined, "An edge highlighted in ", React.createElement("span", {
+  }, React.createElement("p", undefined, "Each cell represents an edge (a link) between two vertices (e.g., people). A number indicates the weight of the edge. A blank cell indicates no edge exists."), React.createElement("p", undefined, "An edge highlighted in ", React.createElement("span", {
     className: "color-orange"
-  }, "orange"), " has been chosen for matching. The people connected by that edge are mated."), React.createElement("p", undefined, "The blossom algorithm will find the path (a set of mates) that has the highest combined weight while including as highest number of people."), React.createElement("p", undefined, "Enabling ", React.createElement("em", undefined, "maximum cardinality"), " will tell the algorithm to only accept paths with everyone possible, even paths with dramatically lower weights."));
+  }, "orange"), " has been chosen for matching. The vertices connected by that edge are mated."), React.createElement("p", undefined, "The blossom algorithm will find the path (a set of mates) that has the highest combined weight while including as highest number of vertices."), React.createElement("p", undefined, "Enabling ", React.createElement("em", undefined, "maximum cardinality"), " will tell the algorithm to only accept paths with everyone possible, even paths with dramatically lower weights."));
 }
 
 function App$Credits(Props) {
@@ -109013,7 +109035,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64874" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65306" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

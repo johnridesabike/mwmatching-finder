@@ -44,6 +44,7 @@ input[type="submit"] {
     border-width: 1px;
     border-color: var(--color__selection);
     font-weight: 300;
+    padding: 4px 12px;
 }
 
 button:active,
@@ -162,6 +163,7 @@ th {
     margin: 1em 0;
     flex-flow: column;
     text-align: center;
+    align-items: center;
 }
 
 .toolbar__item {
@@ -295,7 +297,7 @@ th {
     overflow-x: hidden;
 }
 
-.dialog__edit {
+[data-reach-dialog-content].dialog__edit {
     width: 192px;
     max-width: 50vw;
 }

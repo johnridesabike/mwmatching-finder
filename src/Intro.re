@@ -125,7 +125,8 @@ let make = (~close) => {
       mates=Graph.Mates.empty
       width=400
       height=400
-      style=Css.(style([margin(`auto)]))>
+      style=Css.(style([margin(`auto)]))
+      legend=false>
       "Tap or mouse-over a circle to see who it represents."->React.string
     </ForceGraph>
     <p>

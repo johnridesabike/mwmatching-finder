@@ -6,6 +6,7 @@ let make:
     ~width: int,
     ~height: int,
     ~children: React.element=?,
-    ~style: ReactDOMRe.Style.t=?
+    ~style: ReactDOMRe.Style.t=?,
+    ~legend: bool=?
   ) =>
   React.element;

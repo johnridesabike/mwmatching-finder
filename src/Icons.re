@@ -12,14 +12,14 @@ module ChevronDown = {
     "default";
 };
 
-type simpleIcon = {
-  svg: string,
-  title: string,
-  hex: string,
-  path: string,
+module type SimpleIcon = {
+  let svg: string;
+  let title: string;
+  let hex: string;
+  let path: string;
 };
 
-module MakeSimpleIcon = (IconData: {let icon: simpleIcon;}) => {
+module MakeSimpleIcon = (Data: SimpleIcon) => {
   [@react.component]
   let make =
       (
@@ -27,7 +27,8 @@ module MakeSimpleIcon = (IconData: {let icon: simpleIcon;}) => {
         ~width="24",
         ~className="",
         ~style=ReactDOMRe.Style.make(),
-        ~ariaLabel=IconData.icon.title ++ " Icon",
+        ~fill="#" ++ Data.hex,
+        ~ariaLabel=Data.title ++ " Icon",
         ~ariaHidden=false,
       ) =>
     <svg
@@ -36,42 +37,32 @@ module MakeSimpleIcon = (IconData: {let icon: simpleIcon;}) => {
       height
       width
       className
-      style=ReactDOMRe.Style.(
-        make(~fill="#" ++ IconData.icon.hex, ())->combine(style)
-      )
+      style
       ariaLabel
       ariaHidden>
-      <path d={IconData.icon.path} />
+      <path d=Data.path fill />
     </svg>;
-  React.setDisplayName(make, IconData.icon.title);
+  React.setDisplayName(make, Data.title);
 };
 
-module Reason =
-  MakeSimpleIcon({
-    [@bs.module] external icon: simpleIcon = "simple-icons/icons/reason";
-  });
+[@bs.module]
+external icon: (module SimpleIcon) = "simple-icons/icons/reason";
+module Reason = MakeSimpleIcon((val icon));
 
-module D3 =
-  MakeSimpleIcon({
-    [@bs.module] external icon: simpleIcon = "simple-icons/icons/d3-dot-js";
-  });
+[@bs.module] external icon: (module SimpleIcon) = "simple-icons/icons/d3-dot-js";
+module D3 = MakeSimpleIcon((val icon));
 
-module GitHub =
-  MakeSimpleIcon({
-    [@bs.module] external icon: simpleIcon = "simple-icons/icons/github";
-  });
+[@bs.module]
+external icon: (module SimpleIcon) = "simple-icons/icons/github";
+module GitHub = MakeSimpleIcon((val icon));
 
-module NodeJs =
-  MakeSimpleIcon({
-    [@bs.module] external icon: simpleIcon = "simple-icons/icons/node-dot-js";
-  });
+[@bs.module]
+external icon: (module SimpleIcon) = "simple-icons/icons/node-dot-js";
+module NodeJs = MakeSimpleIcon((val icon));
 
-module SimpleIcons =
-  MakeSimpleIcon({
-    [@bs.module] external icon: simpleIcon = "simple-icons/icons/simpleicons";
-  });
+[@bs.module]
+external icon: (module SimpleIcon) = "simple-icons/icons/simpleicons";
+module SimpleIcons = MakeSimpleIcon((val icon));
 
-module React =
-  MakeSimpleIcon({
-    [@bs.module] external icon: simpleIcon = "simple-icons/icons/react";
-  });
+[@bs.module] external icon: (module SimpleIcon) = "simple-icons/icons/react";
+module React = MakeSimpleIcon((val icon));

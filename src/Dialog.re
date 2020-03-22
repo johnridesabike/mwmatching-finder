@@ -1,5 +1,6 @@
 [@bs.module "@reach/dialog"]
 external make: React.component(Js.t({..})) = "Dialog";
+
 [@react.component]
 let make =
     (

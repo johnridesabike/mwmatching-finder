@@ -1,26 +1,3 @@
-/*
- type value;
- module Drag = {
-   type t = {
-     x: value,
-     y: value,
-     mutable fx: Js.Nullable.t(value),
-     mutable fy: Js.Nullable.t(value),
-   };
-
-   [@bs.send]
-   external on:
-     (
-       t,
-       [@bs.string] [ | `start | `drag | [@bs.as "end"] `end_],
-       [@bs.uncurry] (t => unit)
-     ) =>
-     t =
-     "on";
-   [@bs.module "d3-drag"] external make: unit => t = "drag";
- };
- */
-
 module Force = {
   module Node = {
     /**
@@ -150,42 +127,3 @@ module Force = {
     external getNodes: t('node, 'link) => array(Node.t('node)) = "nodes";
   };
 };
-/*
- module Selection = {
-   module Update = {
-     type t;
-     [@bs.send] external append: (t, string) => t = "append";
-     [@bs.send] external remove: (t, string) => t = "remove";
-   };
-   type t;
-   [@bs.module "d3-selection"] external select: Dom.element => t = "select";
-   [@bs.send] external selectAll: (t, string) => t = "selectAll";
-   [@bs.send] external attrArray: (t, string, array('a)) => t = "attr";
-   [@bs.send] external attr: (t, string, 'a) => t = "attr";
-
-   [@bs.send] external append: (t, string) => t = "append";
-   [@bs.send] external data: (t, 'a) => t = "data";
-   [@bs.send]
-   external join: (t, ~enter: [@bs.uncurry] (Update.t => Update.t), unit) => t =
-     "join";
-   [@bs.send] external call: (t, Drag.t) => t = "call";
-   [@bs.send]
-   external text: (t, [@bs.uncurry] (Force.Node.t('a) => 'b)) => t = "text";
-   [@bs.send] external transition: t => unit = "transition";
-   [@bs.send] external remove: t => t = "remove";
-
-   module Event = {
-     type t = {
-       x: value,
-       y: value,
-       active: bool,
-     };
-   };
-   [@bs.module "d3-selection"] external event: Event.t = "event";
- };
-
- module Shape = {
-   type t;
-   [@bs.module "d3-shape"] external line: unit => t = "line";
- };
- */

@@ -4,9 +4,9 @@ module Vertex: {
 
   let make: string => option(t);
 
-  let toString: t => string;
+  external toString: t => string = "%identity";
 
-  let toElement: t => React.element;
+  external toElement: t => React.element = "%identity";
 
   let empty: t;
 

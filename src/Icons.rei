@@ -20,6 +20,7 @@ module Reason: {
       ~width: string=?,
       ~className: string=?,
       ~style: ReactDOMRe.Style.t=?,
+      ~fill: string=?,
       ~ariaLabel: string=?,
       ~ariaHidden: bool=?
     ) =>
@@ -34,6 +35,7 @@ module D3: {
       ~width: string=?,
       ~className: string=?,
       ~style: ReactDOMRe.Style.t=?,
+      ~fill: string=?,
       ~ariaLabel: string=?,
       ~ariaHidden: bool=?
     ) =>
@@ -48,6 +50,7 @@ module GitHub: {
       ~width: string=?,
       ~className: string=?,
       ~style: ReactDOMRe.Style.t=?,
+      ~fill: string=?,
       ~ariaLabel: string=?,
       ~ariaHidden: bool=?
     ) =>
@@ -62,6 +65,7 @@ module NodeJs: {
       ~width: string=?,
       ~className: string=?,
       ~style: ReactDOMRe.Style.t=?,
+      ~fill: string=?,
       ~ariaLabel: string=?,
       ~ariaHidden: bool=?
     ) =>
@@ -76,6 +80,7 @@ module SimpleIcons: {
       ~width: string=?,
       ~className: string=?,
       ~style: ReactDOMRe.Style.t=?,
+      ~fill: string=?,
       ~ariaLabel: string=?,
       ~ariaHidden: bool=?
     ) =>
@@ -90,6 +95,7 @@ module React: {
       ~width: string=?,
       ~className: string=?,
       ~style: ReactDOMRe.Style.t=?,
+      ~fill: string=?,
       ~ariaLabel: string=?,
       ~ariaHidden: bool=?
     ) =>

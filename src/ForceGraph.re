@@ -1,18 +1,5 @@
 open Belt;
 open D3.Force;
-module Color = {
-  let background = "#282a36";
-  let selection = "#44475a";
-  let foreground = "#f8f8f2";
-  let comment = "#6272a4";
-  let cyan = "#8be9fd";
-  let green = "#50fa7b";
-  let orange = "#ffb86c";
-  let pink = "#ff79c6";
-  let purple = "#bd93f9";
-  //let red = "#ff5555";
-  //let yellow = "#f1fa8c";
-};
 
 let calcLinkDistance = (linkCount, ~height, ~width) => {
   let maxDimension = min(height, width);
@@ -146,7 +133,8 @@ module SvgGraph = {
     };
 
   [@react.component]
-  let make = (~height, ~width as widthInt, ~links, ~nodes, ~gutterSize) => {
+  let make =
+      (~height, ~width as widthInt, ~links, ~nodes, ~gutterSize, ~legend) => {
     let (selected, setSelected) =
       React.useReducer(selectionReducer, NoneSelected);
 
@@ -224,12 +212,14 @@ module SvgGraph = {
          )
          ->React.array}
       </g>
-      <Legend
-        offsetX={widthInt - 116}
-        offsetY=height
-        height="110"
-        width="115"
-      />
+      {legend
+         ? <Legend
+             offsetX={widthInt - 116}
+             offsetY=height
+             height="110"
+             width="115"
+           />
+         : React.null}
       {switch (selected) {
        | Single(id) =>
          <InfoBox offsetX=128 offsetY=height>
@@ -261,6 +251,7 @@ let make =
       ~height,
       ~children as caption=React.null,
       ~style=ReactDOMRe.Style.make(),
+      ~legend=true,
     ) => {
   let nodes =
     graph
@@ -316,7 +307,7 @@ let make =
   let links = forceLink->Links.unsafeToArray;
 
   <figure className="force-graph" style>
-    <SvgGraph width height gutterSize=126 links nodes />
+    <SvgGraph width height gutterSize=126 links nodes legend />
     <figcaption className="force-graph__caption"> caption </figcaption>
   </figure>;
 };

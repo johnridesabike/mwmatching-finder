@@ -156,7 +156,10 @@ module Credits = {
           <li>
             <a href="https://github.com/">
               "git + "->React.string
-              <Icons.GitHub style=Css.(style([height(em(1.))])) />
+              <Icons.GitHub
+                style=Css.(style([height(em(1.))]))
+                fill=Color.foreground
+              />
               "GitHub"->React.string
             </a>
           </li>
@@ -167,7 +170,10 @@ module Credits = {
           </li>
           <li>
             <a href="https://simpleicons.org/">
-              <Icons.SimpleIcons style=Css.(style([height(em(1.))])) />
+              <Icons.SimpleIcons
+                style=Css.(style([height(em(1.))]))
+                fill=Color.foreground
+              />
               "Simple Icons"->React.string
             </a>
           </li>

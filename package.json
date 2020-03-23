@@ -28,7 +28,7 @@
   "private": true,
   "dependencies": {
     "@glennsl/bs-json": "^5.0.2",
-    "@johnridesabike/bs-localforage": "^1.0.0-alpha.8",
+    "@johnridesabike/bs-localforage": "^1.0.0-alpha.9",
     "@reach/dialog": "^0.9.1",
     "@reach/visually-hidden": "^0.9.0",
     "bs-css-dom": "^1.1.0",

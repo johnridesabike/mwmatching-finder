@@ -20,8 +20,6 @@ module Vertex: {
   };
 };
 
-module Edge: {type t;};
-
 type t;
 
 let empty: t;

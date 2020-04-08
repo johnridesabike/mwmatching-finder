@@ -53237,801 +53237,7 @@ exports.PipeFirst = PipeFirst;
 exports.onUnhandledException = onUnhandledException;
 /*  Not a pure module */
 
-},{"bs-platform/lib/js/block.js":"../node_modules/bs-platform/lib/js/block.js","bs-platform/lib/js/curry.js":"../node_modules/bs-platform/lib/js/curry.js","bs-platform/lib/js/caml_option.js":"../node_modules/bs-platform/lib/js/caml_option.js","bs-platform/lib/js/caml_builtin_exceptions.js":"../node_modules/bs-platform/lib/js/caml_builtin_exceptions.js"}],"../node_modules/@johnridesabike/bs-localforage/node_modules/bs-platform/lib/js/caml_builtin_exceptions.js":[function(require,module,exports) {
-'use strict';
-
-
-var out_of_memory = /* tuple */[
-  "Out_of_memory",
-  0
-];
-
-var sys_error = /* tuple */[
-  "Sys_error",
-  -1
-];
-
-var failure = /* tuple */[
-  "Failure",
-  -2
-];
-
-var invalid_argument = /* tuple */[
-  "Invalid_argument",
-  -3
-];
-
-var end_of_file = /* tuple */[
-  "End_of_file",
-  -4
-];
-
-var division_by_zero = /* tuple */[
-  "Division_by_zero",
-  -5
-];
-
-var not_found = /* tuple */[
-  "Not_found",
-  -6
-];
-
-var match_failure = /* tuple */[
-  "Match_failure",
-  -7
-];
-
-var stack_overflow = /* tuple */[
-  "Stack_overflow",
-  -8
-];
-
-var sys_blocked_io = /* tuple */[
-  "Sys_blocked_io",
-  -9
-];
-
-var assert_failure = /* tuple */[
-  "Assert_failure",
-  -10
-];
-
-var undefined_recursive_module = /* tuple */[
-  "Undefined_recursive_module",
-  -11
-];
-
-out_of_memory.tag = 248;
-
-sys_error.tag = 248;
-
-failure.tag = 248;
-
-invalid_argument.tag = 248;
-
-end_of_file.tag = 248;
-
-division_by_zero.tag = 248;
-
-not_found.tag = 248;
-
-match_failure.tag = 248;
-
-stack_overflow.tag = 248;
-
-sys_blocked_io.tag = 248;
-
-assert_failure.tag = 248;
-
-undefined_recursive_module.tag = 248;
-
-exports.out_of_memory = out_of_memory;
-exports.sys_error = sys_error;
-exports.failure = failure;
-exports.invalid_argument = invalid_argument;
-exports.end_of_file = end_of_file;
-exports.division_by_zero = division_by_zero;
-exports.not_found = not_found;
-exports.match_failure = match_failure;
-exports.stack_overflow = stack_overflow;
-exports.sys_blocked_io = sys_blocked_io;
-exports.assert_failure = assert_failure;
-exports.undefined_recursive_module = undefined_recursive_module;
-/*  Not a pure module */
-
-},{}],"../node_modules/@johnridesabike/bs-localforage/node_modules/bs-platform/lib/js/caml_array.js":[function(require,module,exports) {
-'use strict';
-
-var Caml_builtin_exceptions = require("./caml_builtin_exceptions.js");
-
-function caml_array_sub(x, offset, len) {
-  var result = new Array(len);
-  var j = 0;
-  var i = offset;
-  while(j < len) {
-    result[j] = x[i];
-    j = j + 1 | 0;
-    i = i + 1 | 0;
-  };
-  return result;
-}
-
-function len(_acc, _l) {
-  while(true) {
-    var l = _l;
-    var acc = _acc;
-    if (l) {
-      _l = l[1];
-      _acc = l[0].length + acc | 0;
-      continue ;
-    } else {
-      return acc;
-    }
-  };
-}
-
-function fill(arr, _i, _l) {
-  while(true) {
-    var l = _l;
-    var i = _i;
-    if (l) {
-      var x = l[0];
-      var l$1 = x.length;
-      var k = i;
-      var j = 0;
-      while(j < l$1) {
-        arr[k] = x[j];
-        k = k + 1 | 0;
-        j = j + 1 | 0;
-      };
-      _l = l[1];
-      _i = k;
-      continue ;
-    } else {
-      return /* () */0;
-    }
-  };
-}
-
-function caml_array_concat(l) {
-  var v = len(0, l);
-  var result = new Array(v);
-  fill(result, 0, l);
-  return result;
-}
-
-function caml_array_set(xs, index, newval) {
-  if (index < 0 || index >= xs.length) {
-    throw [
-          Caml_builtin_exceptions.invalid_argument,
-          "index out of bounds"
-        ];
-  }
-  xs[index] = newval;
-  return /* () */0;
-}
-
-function caml_array_get(xs, index) {
-  if (index < 0 || index >= xs.length) {
-    throw [
-          Caml_builtin_exceptions.invalid_argument,
-          "index out of bounds"
-        ];
-  }
-  return xs[index];
-}
-
-function caml_make_vect(len, init) {
-  var b = new Array(len);
-  for(var i = 0 ,i_finish = len - 1 | 0; i <= i_finish; ++i){
-    b[i] = init;
-  }
-  return b;
-}
-
-function caml_make_float_vect(len) {
-  var b = new Array(len);
-  for(var i = 0 ,i_finish = len - 1 | 0; i <= i_finish; ++i){
-    b[i] = 0;
-  }
-  return b;
-}
-
-function caml_array_blit(a1, i1, a2, i2, len) {
-  if (i2 <= i1) {
-    for(var j = 0 ,j_finish = len - 1 | 0; j <= j_finish; ++j){
-      a2[j + i2 | 0] = a1[j + i1 | 0];
-    }
-    return /* () */0;
-  } else {
-    for(var j$1 = len - 1 | 0; j$1 >= 0; --j$1){
-      a2[j$1 + i2 | 0] = a1[j$1 + i1 | 0];
-    }
-    return /* () */0;
-  }
-}
-
-function caml_array_dup(prim) {
-  return prim.slice(0);
-}
-
-exports.caml_array_dup = caml_array_dup;
-exports.caml_array_sub = caml_array_sub;
-exports.caml_array_concat = caml_array_concat;
-exports.caml_make_vect = caml_make_vect;
-exports.caml_make_float_vect = caml_make_float_vect;
-exports.caml_array_blit = caml_array_blit;
-exports.caml_array_get = caml_array_get;
-exports.caml_array_set = caml_array_set;
-/* No side effect */
-
-},{"./caml_builtin_exceptions.js":"../node_modules/@johnridesabike/bs-localforage/node_modules/bs-platform/lib/js/caml_builtin_exceptions.js"}],"../node_modules/@johnridesabike/bs-localforage/node_modules/bs-platform/lib/js/curry.js":[function(require,module,exports) {
-'use strict';
-
-var Caml_array = require("./caml_array.js");
-
-function app(_f, _args) {
-  while(true) {
-    var args = _args;
-    var f = _f;
-    var init_arity = f.length;
-    var arity = init_arity === 0 ? 1 : init_arity;
-    var len = args.length;
-    var d = arity - len | 0;
-    if (d === 0) {
-      return f.apply(null, args);
-    } else if (d < 0) {
-      _args = Caml_array.caml_array_sub(args, arity, -d | 0);
-      _f = f.apply(null, Caml_array.caml_array_sub(args, 0, arity));
-      continue ;
-    } else {
-      return (function(f,args){
-      return function (x) {
-        return app(f, args.concat([x]));
-      }
-      }(f,args));
-    }
-  };
-}
-
-function curry_1(o, a0, arity) {
-  switch (arity) {
-    case 1 :
-        return o(a0);
-    case 2 :
-        return (function (param) {
-            return o(a0, param);
-          });
-    case 3 :
-        return (function (param, param$1) {
-            return o(a0, param, param$1);
-          });
-    case 4 :
-        return (function (param, param$1, param$2) {
-            return o(a0, param, param$1, param$2);
-          });
-    case 5 :
-        return (function (param, param$1, param$2, param$3) {
-            return o(a0, param, param$1, param$2, param$3);
-          });
-    case 6 :
-        return (function (param, param$1, param$2, param$3, param$4) {
-            return o(a0, param, param$1, param$2, param$3, param$4);
-          });
-    case 7 :
-        return (function (param, param$1, param$2, param$3, param$4, param$5) {
-            return o(a0, param, param$1, param$2, param$3, param$4, param$5);
-          });
-    default:
-      return app(o, [a0]);
-  }
-}
-
-function _1(o, a0) {
-  var arity = o.length;
-  if (arity === 1) {
-    return o(a0);
-  } else {
-    return curry_1(o, a0, arity);
-  }
-}
-
-function __1(o) {
-  var arity = o.length;
-  if (arity === 1) {
-    return o;
-  } else {
-    return (function (a0) {
-        return _1(o, a0);
-      });
-  }
-}
-
-function curry_2(o, a0, a1, arity) {
-  switch (arity) {
-    case 1 :
-        return app(o(a0), [a1]);
-    case 2 :
-        return o(a0, a1);
-    case 3 :
-        return (function (param) {
-            return o(a0, a1, param);
-          });
-    case 4 :
-        return (function (param, param$1) {
-            return o(a0, a1, param, param$1);
-          });
-    case 5 :
-        return (function (param, param$1, param$2) {
-            return o(a0, a1, param, param$1, param$2);
-          });
-    case 6 :
-        return (function (param, param$1, param$2, param$3) {
-            return o(a0, a1, param, param$1, param$2, param$3);
-          });
-    case 7 :
-        return (function (param, param$1, param$2, param$3, param$4) {
-            return o(a0, a1, param, param$1, param$2, param$3, param$4);
-          });
-    default:
-      return app(o, [
-                  a0,
-                  a1
-                ]);
-  }
-}
-
-function _2(o, a0, a1) {
-  var arity = o.length;
-  if (arity === 2) {
-    return o(a0, a1);
-  } else {
-    return curry_2(o, a0, a1, arity);
-  }
-}
-
-function __2(o) {
-  var arity = o.length;
-  if (arity === 2) {
-    return o;
-  } else {
-    return (function (a0, a1) {
-        return _2(o, a0, a1);
-      });
-  }
-}
-
-function curry_3(o, a0, a1, a2, arity) {
-  switch (arity) {
-    case 1 :
-        return app(o(a0), [
-                    a1,
-                    a2
-                  ]);
-    case 2 :
-        return app(o(a0, a1), [a2]);
-    case 3 :
-        return o(a0, a1, a2);
-    case 4 :
-        return (function (param) {
-            return o(a0, a1, a2, param);
-          });
-    case 5 :
-        return (function (param, param$1) {
-            return o(a0, a1, a2, param, param$1);
-          });
-    case 6 :
-        return (function (param, param$1, param$2) {
-            return o(a0, a1, a2, param, param$1, param$2);
-          });
-    case 7 :
-        return (function (param, param$1, param$2, param$3) {
-            return o(a0, a1, a2, param, param$1, param$2, param$3);
-          });
-    default:
-      return app(o, [
-                  a0,
-                  a1,
-                  a2
-                ]);
-  }
-}
-
-function _3(o, a0, a1, a2) {
-  var arity = o.length;
-  if (arity === 3) {
-    return o(a0, a1, a2);
-  } else {
-    return curry_3(o, a0, a1, a2, arity);
-  }
-}
-
-function __3(o) {
-  var arity = o.length;
-  if (arity === 3) {
-    return o;
-  } else {
-    return (function (a0, a1, a2) {
-        return _3(o, a0, a1, a2);
-      });
-  }
-}
-
-function curry_4(o, a0, a1, a2, a3, arity) {
-  switch (arity) {
-    case 1 :
-        return app(o(a0), [
-                    a1,
-                    a2,
-                    a3
-                  ]);
-    case 2 :
-        return app(o(a0, a1), [
-                    a2,
-                    a3
-                  ]);
-    case 3 :
-        return app(o(a0, a1, a2), [a3]);
-    case 4 :
-        return o(a0, a1, a2, a3);
-    case 5 :
-        return (function (param) {
-            return o(a0, a1, a2, a3, param);
-          });
-    case 6 :
-        return (function (param, param$1) {
-            return o(a0, a1, a2, a3, param, param$1);
-          });
-    case 7 :
-        return (function (param, param$1, param$2) {
-            return o(a0, a1, a2, a3, param, param$1, param$2);
-          });
-    default:
-      return app(o, [
-                  a0,
-                  a1,
-                  a2,
-                  a3
-                ]);
-  }
-}
-
-function _4(o, a0, a1, a2, a3) {
-  var arity = o.length;
-  if (arity === 4) {
-    return o(a0, a1, a2, a3);
-  } else {
-    return curry_4(o, a0, a1, a2, a3, arity);
-  }
-}
-
-function __4(o) {
-  var arity = o.length;
-  if (arity === 4) {
-    return o;
-  } else {
-    return (function (a0, a1, a2, a3) {
-        return _4(o, a0, a1, a2, a3);
-      });
-  }
-}
-
-function curry_5(o, a0, a1, a2, a3, a4, arity) {
-  switch (arity) {
-    case 1 :
-        return app(o(a0), [
-                    a1,
-                    a2,
-                    a3,
-                    a4
-                  ]);
-    case 2 :
-        return app(o(a0, a1), [
-                    a2,
-                    a3,
-                    a4
-                  ]);
-    case 3 :
-        return app(o(a0, a1, a2), [
-                    a3,
-                    a4
-                  ]);
-    case 4 :
-        return app(o(a0, a1, a2, a3), [a4]);
-    case 5 :
-        return o(a0, a1, a2, a3, a4);
-    case 6 :
-        return (function (param) {
-            return o(a0, a1, a2, a3, a4, param);
-          });
-    case 7 :
-        return (function (param, param$1) {
-            return o(a0, a1, a2, a3, a4, param, param$1);
-          });
-    default:
-      return app(o, [
-                  a0,
-                  a1,
-                  a2,
-                  a3,
-                  a4
-                ]);
-  }
-}
-
-function _5(o, a0, a1, a2, a3, a4) {
-  var arity = o.length;
-  if (arity === 5) {
-    return o(a0, a1, a2, a3, a4);
-  } else {
-    return curry_5(o, a0, a1, a2, a3, a4, arity);
-  }
-}
-
-function __5(o) {
-  var arity = o.length;
-  if (arity === 5) {
-    return o;
-  } else {
-    return (function (a0, a1, a2, a3, a4) {
-        return _5(o, a0, a1, a2, a3, a4);
-      });
-  }
-}
-
-function curry_6(o, a0, a1, a2, a3, a4, a5, arity) {
-  switch (arity) {
-    case 1 :
-        return app(o(a0), [
-                    a1,
-                    a2,
-                    a3,
-                    a4,
-                    a5
-                  ]);
-    case 2 :
-        return app(o(a0, a1), [
-                    a2,
-                    a3,
-                    a4,
-                    a5
-                  ]);
-    case 3 :
-        return app(o(a0, a1, a2), [
-                    a3,
-                    a4,
-                    a5
-                  ]);
-    case 4 :
-        return app(o(a0, a1, a2, a3), [
-                    a4,
-                    a5
-                  ]);
-    case 5 :
-        return app(o(a0, a1, a2, a3, a4), [a5]);
-    case 6 :
-        return o(a0, a1, a2, a3, a4, a5);
-    case 7 :
-        return (function (param) {
-            return o(a0, a1, a2, a3, a4, a5, param);
-          });
-    default:
-      return app(o, [
-                  a0,
-                  a1,
-                  a2,
-                  a3,
-                  a4,
-                  a5
-                ]);
-  }
-}
-
-function _6(o, a0, a1, a2, a3, a4, a5) {
-  var arity = o.length;
-  if (arity === 6) {
-    return o(a0, a1, a2, a3, a4, a5);
-  } else {
-    return curry_6(o, a0, a1, a2, a3, a4, a5, arity);
-  }
-}
-
-function __6(o) {
-  var arity = o.length;
-  if (arity === 6) {
-    return o;
-  } else {
-    return (function (a0, a1, a2, a3, a4, a5) {
-        return _6(o, a0, a1, a2, a3, a4, a5);
-      });
-  }
-}
-
-function curry_7(o, a0, a1, a2, a3, a4, a5, a6, arity) {
-  switch (arity) {
-    case 1 :
-        return app(o(a0), [
-                    a1,
-                    a2,
-                    a3,
-                    a4,
-                    a5,
-                    a6
-                  ]);
-    case 2 :
-        return app(o(a0, a1), [
-                    a2,
-                    a3,
-                    a4,
-                    a5,
-                    a6
-                  ]);
-    case 3 :
-        return app(o(a0, a1, a2), [
-                    a3,
-                    a4,
-                    a5,
-                    a6
-                  ]);
-    case 4 :
-        return app(o(a0, a1, a2, a3), [
-                    a4,
-                    a5,
-                    a6
-                  ]);
-    case 5 :
-        return app(o(a0, a1, a2, a3, a4), [
-                    a5,
-                    a6
-                  ]);
-    case 6 :
-        return app(o(a0, a1, a2, a3, a4, a5), [a6]);
-    case 7 :
-        return o(a0, a1, a2, a3, a4, a5, a6);
-    default:
-      return app(o, [
-                  a0,
-                  a1,
-                  a2,
-                  a3,
-                  a4,
-                  a5,
-                  a6
-                ]);
-  }
-}
-
-function _7(o, a0, a1, a2, a3, a4, a5, a6) {
-  var arity = o.length;
-  if (arity === 7) {
-    return o(a0, a1, a2, a3, a4, a5, a6);
-  } else {
-    return curry_7(o, a0, a1, a2, a3, a4, a5, a6, arity);
-  }
-}
-
-function __7(o) {
-  var arity = o.length;
-  if (arity === 7) {
-    return o;
-  } else {
-    return (function (a0, a1, a2, a3, a4, a5, a6) {
-        return _7(o, a0, a1, a2, a3, a4, a5, a6);
-      });
-  }
-}
-
-function curry_8(o, a0, a1, a2, a3, a4, a5, a6, a7, arity) {
-  switch (arity) {
-    case 1 :
-        return app(o(a0), [
-                    a1,
-                    a2,
-                    a3,
-                    a4,
-                    a5,
-                    a6,
-                    a7
-                  ]);
-    case 2 :
-        return app(o(a0, a1), [
-                    a2,
-                    a3,
-                    a4,
-                    a5,
-                    a6,
-                    a7
-                  ]);
-    case 3 :
-        return app(o(a0, a1, a2), [
-                    a3,
-                    a4,
-                    a5,
-                    a6,
-                    a7
-                  ]);
-    case 4 :
-        return app(o(a0, a1, a2, a3), [
-                    a4,
-                    a5,
-                    a6,
-                    a7
-                  ]);
-    case 5 :
-        return app(o(a0, a1, a2, a3, a4), [
-                    a5,
-                    a6,
-                    a7
-                  ]);
-    case 6 :
-        return app(o(a0, a1, a2, a3, a4, a5), [
-                    a6,
-                    a7
-                  ]);
-    case 7 :
-        return app(o(a0, a1, a2, a3, a4, a5, a6), [a7]);
-    default:
-      return app(o, [
-                  a0,
-                  a1,
-                  a2,
-                  a3,
-                  a4,
-                  a5,
-                  a6,
-                  a7
-                ]);
-  }
-}
-
-function _8(o, a0, a1, a2, a3, a4, a5, a6, a7) {
-  var arity = o.length;
-  if (arity === 8) {
-    return o(a0, a1, a2, a3, a4, a5, a6, a7);
-  } else {
-    return curry_8(o, a0, a1, a2, a3, a4, a5, a6, a7, arity);
-  }
-}
-
-function __8(o) {
-  var arity = o.length;
-  if (arity === 8) {
-    return o;
-  } else {
-    return (function (a0, a1, a2, a3, a4, a5, a6, a7) {
-        return _8(o, a0, a1, a2, a3, a4, a5, a6, a7);
-      });
-  }
-}
-
-exports.app = app;
-exports.curry_1 = curry_1;
-exports._1 = _1;
-exports.__1 = __1;
-exports.curry_2 = curry_2;
-exports._2 = _2;
-exports.__2 = __2;
-exports.curry_3 = curry_3;
-exports._3 = _3;
-exports.__3 = __3;
-exports.curry_4 = curry_4;
-exports._4 = _4;
-exports.__4 = __4;
-exports.curry_5 = curry_5;
-exports._5 = _5;
-exports.__5 = __5;
-exports.curry_6 = curry_6;
-exports._6 = _6;
-exports.__6 = __6;
-exports.curry_7 = curry_7;
-exports._7 = _7;
-exports.__7 = __7;
-exports.curry_8 = curry_8;
-exports._8 = _8;
-exports.__8 = __8;
-/* No side effect */
-
-},{"./caml_array.js":"../node_modules/@johnridesabike/bs-localforage/node_modules/bs-platform/lib/js/caml_array.js"}],"../node_modules/@johnridesabike/bs-localforage/node_modules/localforage/dist/localforage.js":[function(require,module,exports) {
+},{"bs-platform/lib/js/block.js":"../node_modules/bs-platform/lib/js/block.js","bs-platform/lib/js/curry.js":"../node_modules/bs-platform/lib/js/curry.js","bs-platform/lib/js/caml_option.js":"../node_modules/bs-platform/lib/js/caml_option.js","bs-platform/lib/js/caml_builtin_exceptions.js":"../node_modules/bs-platform/lib/js/caml_builtin_exceptions.js"}],"../node_modules/localforage/dist/localforage.js":[function(require,module,exports) {
 var define;
 var global = arguments[3];
 /*!
@@ -56832,180 +56038,7 @@ module.exports = localforage_js;
 },{"3":3}]},{},[4])(4)
 });
 
-},{}],"../node_modules/@johnridesabike/bs-localforage/node_modules/bs-platform/lib/js/caml_option.js":[function(require,module,exports) {
-'use strict';
-
-
-var undefinedHeader = [];
-
-function some(x) {
-  if (x === undefined) {
-    var block = /* tuple */[
-      undefinedHeader,
-      0
-    ];
-    block.tag = 256;
-    return block;
-  } else if (x !== null && x[0] === undefinedHeader) {
-    var nid = x[1] + 1 | 0;
-    var block$1 = /* tuple */[
-      undefinedHeader,
-      nid
-    ];
-    block$1.tag = 256;
-    return block$1;
-  } else {
-    return x;
-  }
-}
-
-function nullable_to_opt(x) {
-  if (x === null || x === undefined) {
-    return ;
-  } else {
-    return some(x);
-  }
-}
-
-function undefined_to_opt(x) {
-  if (x === undefined) {
-    return ;
-  } else {
-    return some(x);
-  }
-}
-
-function null_to_opt(x) {
-  if (x === null) {
-    return ;
-  } else {
-    return some(x);
-  }
-}
-
-function valFromOption(x) {
-  if (x !== null && x[0] === undefinedHeader) {
-    var depth = x[1];
-    if (depth === 0) {
-      return ;
-    } else {
-      return /* tuple */[
-              undefinedHeader,
-              depth - 1 | 0
-            ];
-    }
-  } else {
-    return x;
-  }
-}
-
-function option_get(x) {
-  if (x === undefined) {
-    return ;
-  } else {
-    return valFromOption(x);
-  }
-}
-
-function option_get_unwrap(x) {
-  if (x === undefined) {
-    return ;
-  } else {
-    return valFromOption(x)[1];
-  }
-}
-
-exports.nullable_to_opt = nullable_to_opt;
-exports.undefined_to_opt = undefined_to_opt;
-exports.null_to_opt = null_to_opt;
-exports.valFromOption = valFromOption;
-exports.some = some;
-exports.option_get = option_get;
-exports.option_get_unwrap = option_get_unwrap;
-/* No side effect */
-
-},{}],"../node_modules/@johnridesabike/bs-localforage/node_modules/bs-platform/lib/js/caml_exceptions.js":[function(require,module,exports) {
-'use strict';
-
-
-var id = {
-  contents: 0
-};
-
-function caml_set_oo_id(b) {
-  b[1] = id.contents;
-  id.contents = id.contents + 1;
-  return b;
-}
-
-function caml_fresh_oo_id(param) {
-  id.contents = id.contents + 1;
-  return id.contents;
-}
-
-function create(str) {
-  var v_001 = caml_fresh_oo_id(/* () */0);
-  var v = /* tuple */[
-    str,
-    v_001
-  ];
-  v.tag = 248;
-  return v;
-}
-
-function caml_is_extension(e) {
-  if (e === undefined) {
-    return false;
-  } else if (e.tag === 248) {
-    return true;
-  } else {
-    var slot = e[0];
-    if (slot !== undefined) {
-      return slot.tag === 248;
-    } else {
-      return false;
-    }
-  }
-}
-
-exports.caml_set_oo_id = caml_set_oo_id;
-exports.caml_fresh_oo_id = caml_fresh_oo_id;
-exports.create = create;
-exports.caml_is_extension = caml_is_extension;
-/* No side effect */
-
-},{}],"../node_modules/@johnridesabike/bs-localforage/node_modules/bs-platform/lib/js/caml_js_exceptions.js":[function(require,module,exports) {
-'use strict';
-
-var Caml_option = require("./caml_option.js");
-var Caml_exceptions = require("./caml_exceptions.js");
-
-var $$Error = Caml_exceptions.create("Caml_js_exceptions.Error");
-
-function internalToOCamlException(e) {
-  if (Caml_exceptions.caml_is_extension(e)) {
-    return e;
-  } else {
-    return [
-            $$Error,
-            e
-          ];
-  }
-}
-
-function caml_as_js_exn(exn) {
-  if (exn[0] === $$Error) {
-    return Caml_option.some(exn[1]);
-  }
-  
-}
-
-exports.$$Error = $$Error;
-exports.internalToOCamlException = internalToOCamlException;
-exports.caml_as_js_exn = caml_as_js_exn;
-/* No side effect */
-
-},{"./caml_option.js":"../node_modules/@johnridesabike/bs-localforage/node_modules/bs-platform/lib/js/caml_option.js","./caml_exceptions.js":"../node_modules/@johnridesabike/bs-localforage/node_modules/bs-platform/lib/js/caml_exceptions.js"}],"../node_modules/@johnridesabike/bs-localforage/node_modules/localforage-getitems/dist/localforage-getitems.js":[function(require,module,exports) {
+},{}],"../node_modules/localforage-getitems/dist/localforage-getitems.js":[function(require,module,exports) {
 var define;
 var global = arguments[3];
 (function (global, factory) {
@@ -57261,7 +56294,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
 
-},{"localforage":"../node_modules/@johnridesabike/bs-localforage/node_modules/localforage/dist/localforage.js"}],"../node_modules/@johnridesabike/bs-localforage/src/GetItemsJs.bs.js":[function(require,module,exports) {
+},{"localforage":"../node_modules/localforage/dist/localforage.js"}],"../node_modules/@johnridesabike/bs-localforage/src/GetItemsJs.bs.js":[function(require,module,exports) {
 // Generated by BUCKLESCRIPT, PLEASE EDIT WITH CARE
 'use strict';
 
@@ -57276,7 +56309,7 @@ function load(param) {
 exports.load = load;
 /* localforage Not a pure module */
 
-},{"localforage":"../node_modules/@johnridesabike/bs-localforage/node_modules/localforage/dist/localforage.js","localforage-getitems":"../node_modules/@johnridesabike/bs-localforage/node_modules/localforage-getitems/dist/localforage-getitems.js"}],"../node_modules/@johnridesabike/bs-localforage/node_modules/localforage-setitems/dist/localforage-setitems.js":[function(require,module,exports) {
+},{"localforage":"../node_modules/localforage/dist/localforage.js","localforage-getitems":"../node_modules/localforage-getitems/dist/localforage-getitems.js"}],"../node_modules/localforage-setitems/dist/localforage-setitems.js":[function(require,module,exports) {
 var define;
 var global = arguments[3];
 (function (global, factory) {
@@ -57479,7 +56512,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
 
-},{"localforage":"../node_modules/@johnridesabike/bs-localforage/node_modules/localforage/dist/localforage.js"}],"../node_modules/@johnridesabike/bs-localforage/src/SetItemsJs.bs.js":[function(require,module,exports) {
+},{"localforage":"../node_modules/localforage/dist/localforage.js"}],"../node_modules/@johnridesabike/bs-localforage/src/SetItemsJs.bs.js":[function(require,module,exports) {
 // Generated by BUCKLESCRIPT, PLEASE EDIT WITH CARE
 'use strict';
 
@@ -57494,7 +56527,7 @@ function load(param) {
 exports.load = load;
 /* localforage Not a pure module */
 
-},{"localforage":"../node_modules/@johnridesabike/bs-localforage/node_modules/localforage/dist/localforage.js","localforage-setitems":"../node_modules/@johnridesabike/bs-localforage/node_modules/localforage-setitems/dist/localforage-setitems.js"}],"../node_modules/@johnridesabike/bs-localforage/node_modules/localforage-removeitems/dist/localforage-removeitems.js":[function(require,module,exports) {
+},{"localforage":"../node_modules/localforage/dist/localforage.js","localforage-setitems":"../node_modules/localforage-setitems/dist/localforage-setitems.js"}],"../node_modules/localforage-removeitems/dist/localforage-removeitems.js":[function(require,module,exports) {
 var define;
 var global = arguments[3];
 (function (global, factory) {
@@ -57651,7 +56684,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
 
-},{"localforage":"../node_modules/@johnridesabike/bs-localforage/node_modules/localforage/dist/localforage.js"}],"../node_modules/@johnridesabike/bs-localforage/src/RemoveItemsJs.bs.js":[function(require,module,exports) {
+},{"localforage":"../node_modules/localforage/dist/localforage.js"}],"../node_modules/@johnridesabike/bs-localforage/src/RemoveItemsJs.bs.js":[function(require,module,exports) {
 // Generated by BUCKLESCRIPT, PLEASE EDIT WITH CARE
 'use strict';
 
@@ -57666,7 +56699,7 @@ function load(param) {
 exports.load = load;
 /* localforage Not a pure module */
 
-},{"localforage":"../node_modules/@johnridesabike/bs-localforage/node_modules/localforage/dist/localforage.js","localforage-removeitems":"../node_modules/@johnridesabike/bs-localforage/node_modules/localforage-removeitems/dist/localforage-removeitems.js"}],"../node_modules/@johnridesabike/bs-localforage/src/LoadAllPlugins.bs.js":[function(require,module,exports) {
+},{"localforage":"../node_modules/localforage/dist/localforage.js","localforage-removeitems":"../node_modules/localforage-removeitems/dist/localforage-removeitems.js"}],"../node_modules/@johnridesabike/bs-localforage/src/LoadAllPlugins.bs.js":[function(require,module,exports) {
 // Generated by BUCKLESCRIPT, PLEASE EDIT WITH CARE
 'use strict';
 
@@ -57726,7 +56759,7 @@ exports.get = get;
 exports.set = set;
 /* localforage Not a pure module */
 
-},{"bs-platform/lib/js/curry.js":"../node_modules/@johnridesabike/bs-localforage/node_modules/bs-platform/lib/js/curry.js","localforage":"../node_modules/@johnridesabike/bs-localforage/node_modules/localforage/dist/localforage.js","bs-platform/lib/js/caml_js_exceptions.js":"../node_modules/@johnridesabike/bs-localforage/node_modules/bs-platform/lib/js/caml_js_exceptions.js","./LoadAllPlugins.bs.js":"../node_modules/@johnridesabike/bs-localforage/src/LoadAllPlugins.bs.js"}],"Color.bs.js":[function(require,module,exports) {
+},{"bs-platform/lib/js/curry.js":"../node_modules/bs-platform/lib/js/curry.js","localforage":"../node_modules/localforage/dist/localforage.js","bs-platform/lib/js/caml_js_exceptions.js":"../node_modules/bs-platform/lib/js/caml_js_exceptions.js","./LoadAllPlugins.bs.js":"../node_modules/@johnridesabike/bs-localforage/src/LoadAllPlugins.bs.js"}],"Color.bs.js":[function(require,module,exports) {
 // Generated by BUCKLESCRIPT, PLEASE EDIT WITH CARE
 'use strict';
 
@@ -70550,42 +69583,46 @@ function useForm(initialInput, onSubmit) {
   var tmp;
   tmp = typeof match$1 === "number" || match$1.tag ? false : true;
   return {
-    updateName: function updateName(nextInputFn) {
+    updateName: function updateName(nextInputFn, $$event) {
+      var target = $$event.target;
       return Curry._1(dispatch,
       /* UpdateNameField */
-      Block.__(0, [nextInputFn]));
+      Block.__(0, [Curry._1(nextInputFn, target)]));
     },
-    updateDelete: function updateDelete(nextInputFn) {
+    updateDelete: function updateDelete(nextInputFn, $$event) {
+      var target = $$event.target;
       return Curry._1(dispatch,
       /* UpdateDeleteField */
-      Block.__(1, [nextInputFn]));
+      Block.__(1, [Curry._1(nextInputFn, target)]));
     },
-    updateOldName: function updateOldName(nextInputFn) {
+    updateOldName: function updateOldName(nextInputFn, $$event) {
+      var target = $$event.target;
       return Curry._1(dispatch,
       /* UpdateOldNameField */
-      Block.__(2, [nextInputFn]));
+      Block.__(2, [Curry._1(nextInputFn, target)]));
     },
-    updateExistingNames: function updateExistingNames(nextInputFn) {
+    updateExistingNames: function updateExistingNames(nextInputFn, $$event) {
+      var target = $$event.target;
       return Curry._1(dispatch,
       /* UpdateExistingNamesField */
-      Block.__(3, [nextInputFn]));
+      Block.__(3, [Curry._1(nextInputFn, target)]));
     },
-    blurName: function blurName(param) {
+    blurName: function blurName(_event) {
       return Curry._1(dispatch,
       /* BlurNameField */
       0);
     },
-    blurDelete: function blurDelete(param) {
+    blurDelete: function blurDelete(_event) {
       return Curry._1(dispatch,
       /* BlurDeleteField */
       1);
     },
-    blurOldName: function blurOldName(param) {
+    blurOldName: function blurOldName(_event) {
       return Curry._1(dispatch,
       /* BlurOldNameField */
       2);
     },
-    blurExistingNames: function blurExistingNames(param) {
+    blurExistingNames: function blurExistingNames(_event) {
       return Curry._1(dispatch,
       /* BlurExistingNamesField */
       3);
@@ -71138,22 +70175,24 @@ function useForm$1(initialInput, onSubmit) {
   var tmp;
   tmp = typeof match$1 === "number" || match$1.tag ? false : true;
   return {
-    updateWeight: function updateWeight(nextInputFn) {
+    updateWeight: function updateWeight(nextInputFn, $$event) {
+      var target = $$event.target;
       return Curry._1(dispatch,
       /* UpdateWeightField */
-      Block.__(0, [nextInputFn]));
+      Block.__(0, [Curry._1(nextInputFn, target)]));
     },
-    updateDelete: function updateDelete(nextInputFn) {
+    updateDelete: function updateDelete(nextInputFn, $$event) {
+      var target = $$event.target;
       return Curry._1(dispatch,
       /* UpdateDeleteField */
-      Block.__(1, [nextInputFn]));
+      Block.__(1, [Curry._1(nextInputFn, target)]));
     },
-    blurWeight: function blurWeight(param) {
+    blurWeight: function blurWeight(_event) {
       return Curry._1(dispatch,
       /* BlurWeightField */
       0);
     },
-    blurDelete: function blurDelete(param) {
+    blurDelete: function blurDelete(_event) {
       return Curry._1(dispatch,
       /* BlurDeleteField */
       1);
@@ -71291,22 +70330,15 @@ function Forms$VertexEditor(Props) {
     size: 10,
     type: "text",
     value: form.input.name,
-    onBlur: function onBlur(param) {
-      return Curry._1(form.blurName,
-      /* () */
-      0);
-    },
-    onChange: function onChange($$event) {
-      var name = $$event.target.value;
-      return Curry._1(form.updateName, function (input) {
-        return {
-          name: name,
-          delete: input.delete,
-          oldName: input.oldName,
-          existingNames: input.existingNames
-        };
-      });
-    }
+    onBlur: form.blurName,
+    onChange: Curry._1(form.updateName, function (target, input) {
+      return {
+        name: target.value,
+        delete: input.delete,
+        oldName: input.oldName,
+        existingNames: input.existingNames
+      };
+    })
   })), React.createElement("p", undefined, React.createElement("label", {
     className: "dialog__label"
   }, React.createElement("span", {
@@ -71314,17 +70346,14 @@ function Forms$VertexEditor(Props) {
   }, "Delete " + (name + ": ")), React.createElement("input", {
     checked: form.input.delete,
     type: "checkbox",
-    onChange: function onChange($$event) {
-      var $$delete = $$event.target.checked;
-      return Curry._1(form.updateDelete, function (input) {
-        return {
-          name: input.name,
-          delete: $$delete,
-          oldName: input.oldName,
-          existingNames: input.existingNames
-        };
-      });
-    }
+    onChange: Curry._1(form.updateDelete, function (target, input) {
+      return {
+        name: input.name,
+        delete: target.checked,
+        oldName: input.oldName,
+        existingNames: input.existingNames
+      };
+    })
   }))), React.createElement("button", {
     className: Cn.make(
     /* :: */
@@ -71393,22 +70422,15 @@ function Forms$VertexAdder(Props) {
     size: 10,
     type: "text",
     value: form.input.name,
-    onBlur: function onBlur(param) {
-      return Curry._1(form.blurName,
-      /* () */
-      0);
-    },
-    onChange: function onChange($$event) {
-      var name = $$event.target.value;
-      return Curry._1(form.updateName, function (input) {
-        return {
-          name: name,
-          delete: input.delete,
-          oldName: input.oldName,
-          existingNames: input.existingNames
-        };
-      });
-    }
+    onBlur: form.blurName,
+    onChange: Curry._1(form.updateName, function (target, input) {
+      return {
+        name: target.value,
+        delete: input.delete,
+        oldName: input.oldName,
+        existingNames: input.existingNames
+      };
+    })
   })), " ", React.createElement("button", {
     disabled: form.submitting
   }, form.submitting ? "Submitting..." : "Submit"), tmp);
@@ -71482,15 +70504,12 @@ function Forms$EdgeSetter(Props) {
     disabled: form.submitting || form.input.delete,
     type: "number",
     value: tmp,
-    onChange: function onChange($$event) {
-      var weight = $$event.target.value;
-      return Curry._1(form.updateWeight, function (input) {
-        return {
-          weight: weight,
-          delete: input.delete
-        };
-      });
-    }
+    onChange: Curry._1(form.updateWeight, function (target, input) {
+      return {
+        weight: target.value,
+        delete: input.delete
+      };
+    })
   })), React.createElement("p", {
     className: "font-small"
   }, React.createElement("label", {
@@ -71498,15 +70517,12 @@ function Forms$EdgeSetter(Props) {
   }, "Remove ", React.createElement("input", {
     checked: form.input.delete,
     type: "checkbox",
-    onChange: function onChange($$event) {
-      var $$delete = $$event.target.checked;
-      return Curry._1(form.updateDelete, function (input) {
-        return {
-          weight: input.weight,
-          delete: $$delete
-        };
-      });
-    }
+    onChange: Curry._1(form.updateDelete, function (target, input) {
+      return {
+        weight: input.weight,
+        delete: target.checked
+      };
+    })
   }))), React.createElement("button", {
     className: Cn.make(
     /* :: */
@@ -71613,13 +70629,21 @@ exports.makeId = makeId;
 exports.noop = noop;
 exports.stateToAttributeString = stateToAttributeString;
 exports.useConstant = useConstant;
+exports.useControlledState = useControlledState;
 exports.useControlledSwitchWarning = useControlledSwitchWarning;
+exports.useEventCallback = useEventCallback;
 exports.useFocusChange = useFocusChange;
 exports.useForkedRef = useForkedRef;
 exports.usePrevious = usePrevious;
 exports.useStateLogger = useStateLogger;
 exports.useUpdateEffect = useUpdateEffect;
 exports.wrapEvent = wrapEvent;
+Object.defineProperty(exports, "warning", {
+  enumerable: true,
+  get: function () {
+    return _warning.default;
+  }
+});
 exports.useIsomorphicLayoutEffect = exports.ponyfillGlobal = exports.checkStyles = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
@@ -71918,6 +70942,30 @@ function stateToAttributeString(state) {
   return String(state).replace(/([\s_]+)/g, "-").toLowerCase();
 }
 /**
+ * Check if a component is controlled or uncontrolled and return the correct
+ * state value and setter accordingly. If the component state is controlled by
+ * the app, the setter is a noop.
+ *
+ * @param controlPropValue
+ * @param defaultValue
+ */
+
+
+function useControlledState(controlPropValue, defaultValue) {
+  var isControlled = (0, _react.useRef)(controlPropValue != null);
+
+  var _useState = (0, _react.useState)(defaultValue),
+      valueState = _useState[0],
+      setValue = _useState[1];
+
+  var set = (0, _react.useCallback)(function (n) {
+    if (!isControlled.current) {
+      setValue(n);
+    }
+  }, []);
+  return [isControlled.current ? controlPropValue : valueState, set];
+}
+/**
  * Logs a warning in dev mode when a component switches from controlled to
  * uncontrolled, or vice versa
  *
@@ -71969,6 +71017,24 @@ function useConstant(fn) {
   return ref.current.v;
 }
 /**
+ * @param callback
+ */
+
+
+function useEventCallback(callback) {
+  var ref = (0, _react.useRef)(callback);
+  useIsomorphicLayoutEffect(function () {
+    ref.current = callback;
+  });
+  return (0, _react.useCallback)(function (event) {
+    for (var _len3 = arguments.length, args = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
+      args[_key3 - 1] = arguments[_key3];
+    }
+
+    return ref.current.apply(ref, [event].concat(args));
+  }, []);
+}
+/**
  * Detect when focus changes in our document.
  *
  * @param handleChange
@@ -72017,8 +71083,8 @@ function useFocusChange(handleChange, when, ownerDocument) {
 
 
 function useForkedRef() {
-  for (var _len3 = arguments.length, refs = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-    refs[_key3] = arguments[_key3];
+  for (var _len4 = arguments.length, refs = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+    refs[_key4] = arguments[_key4];
   }
 
   return (0, _react.useMemo)(function () {
@@ -76844,7 +75910,22 @@ var DialogOverlay =
 
   (0, _react.useEffect)(function () {
     return (0, _utils.checkStyles)("dialog");
-  }, []);
+  }, []); // We want to ignore the immediate focus of a tooltip so it doesn't pop
+  // up again when the menu closes, only pops up when focus returns again
+  // to the tooltip (like native OS tooltips).
+
+  (0, _react.useEffect)(function () {
+    if (isOpen) {
+      // @ts-ignore
+      window.__REACH_DISABLE_TOOLTIPS = true;
+    } else {
+      window.requestAnimationFrame(function () {
+        // Wait a frame so that this doesn't fire before tooltip does
+        // @ts-ignore
+        window.__REACH_DISABLE_TOOLTIPS = false;
+      });
+    }
+  }, [isOpen]);
   return isOpen ? _react.default.createElement(_portal.default, {
     "data-reach-dialog-wrapper": ""
   }, _react.default.createElement(DialogInner, Object.assign({
@@ -77830,19 +76911,24 @@ var ChevronDown = function ChevronDown(props) {
       size = props.size,
       otherProps = _objectWithoutProperties(props, ["color", "size"]);
 
-  return _react.default.createElement("svg", _extends({
-    xmlns: "http://www.w3.org/2000/svg",
-    width: size,
-    height: size,
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: color,
-    strokeWidth: "2",
-    strokeLinecap: "round",
-    strokeLinejoin: "round"
-  }, otherProps), _react.default.createElement("polyline", {
-    points: "6 9 12 15 18 9"
-  }));
+  return (
+    /*#__PURE__*/
+    _react.default.createElement("svg", _extends({
+      xmlns: "http://www.w3.org/2000/svg",
+      width: size,
+      height: size,
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: color,
+      strokeWidth: "2",
+      strokeLinecap: "round",
+      strokeLinejoin: "round"
+    }, otherProps),
+    /*#__PURE__*/
+    _react.default.createElement("polyline", {
+      points: "6 9 12 15 18 9"
+    }))
+  );
 };
 
 ChevronDown.propTypes = {
@@ -77928,19 +77014,24 @@ var ChevronLeft = function ChevronLeft(props) {
       size = props.size,
       otherProps = _objectWithoutProperties(props, ["color", "size"]);
 
-  return _react.default.createElement("svg", _extends({
-    xmlns: "http://www.w3.org/2000/svg",
-    width: size,
-    height: size,
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: color,
-    strokeWidth: "2",
-    strokeLinecap: "round",
-    strokeLinejoin: "round"
-  }, otherProps), _react.default.createElement("polyline", {
-    points: "15 18 9 12 15 6"
-  }));
+  return (
+    /*#__PURE__*/
+    _react.default.createElement("svg", _extends({
+      xmlns: "http://www.w3.org/2000/svg",
+      width: size,
+      height: size,
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: color,
+      strokeWidth: "2",
+      strokeLinecap: "round",
+      strokeLinejoin: "round"
+    }, otherProps),
+    /*#__PURE__*/
+    _react.default.createElement("polyline", {
+      points: "15 18 9 12 15 6"
+    }))
+  );
 };
 
 ChevronLeft.propTypes = {
@@ -78335,7 +77426,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50210" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52840" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

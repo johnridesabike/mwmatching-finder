@@ -111,13 +111,14 @@ module VertexEditor = {
           type_="text"
           value={form.input.name}
           disabled={form.submitting}
-          onBlur={_ => form.blurName()}
+          onBlur={form.blurName}
           size=10
           ref={ReactDOMRe.Ref.domRef(focused)}
-          onChange={event => {
-            let name = event->ReactEvent.Form.target##value;
-            form.updateName(input => {...input, name});
-          }}
+          onChange={
+            form.updateName((~target, input) =>
+              {...input, name: target##value}
+            )
+          }
         />
       </label>
       <p>
@@ -128,10 +129,11 @@ module VertexEditor = {
           <input
             type_="checkbox"
             checked={form.input.delete}
-            onChange={event => {
-              let delete = event->ReactEvent.Form.target##checked;
-              form.updateDelete(input => {...input, delete});
-            }}
+            onChange={
+              form.updateDelete((~target, input) =>
+                {...input, delete: target##checked}
+              )
+            }
           />
         </label>
       </p>
@@ -187,13 +189,14 @@ module VertexAdder = {
           type_="text"
           value={form.input.name}
           disabled={form.submitting}
-          onBlur={_ => form.blurName()}
+          onBlur={form.blurName}
           size=10
           ref={ReactDOMRe.Ref.domRef(focused)}
-          onChange={event => {
-            let name = event->ReactEvent.Form.target##value;
-            form.updateName(input => {...input, name});
-          }}
+          onChange={
+            form.updateName((~target, input) =>
+              {...input, name: target##value}
+            )
+          }
         />
       </label>
       " "->React.string
@@ -254,10 +257,11 @@ module EdgeSetter = {
           }
           ref={ReactDOMRe.Ref.domRef(focused)}
           disabled={form.submitting || form.input.delete}
-          onChange={event => {
-            let weight = event->ReactEvent.Form.target##value;
-            form.updateWeight(input => {...input, weight});
-          }}
+          onChange={
+            form.updateWeight((~target, input) =>
+              {...input, weight: target##value}
+            )
+          }
         />
       </label>
       <p className="font-small">
@@ -266,10 +270,11 @@ module EdgeSetter = {
           <input
             type_="checkbox"
             checked={form.input.delete}
-            onChange={event => {
-              let delete = event->ReactEvent.Form.target##checked;
-              form.updateDelete(input => {...input, delete});
-            }}
+            onChange={
+              form.updateDelete((~target, input) =>
+                {...input, delete: target##checked}
+              )
+            }
           />
         </label>
       </p>

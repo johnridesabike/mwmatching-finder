@@ -11,9 +11,7 @@ module Vertex = {
     | "" => None
     | s => Some(s);
 
-  external toString: t => string = "%identity";
-
-  external toElement: t => React.element = "%identity";
+  let toString = x => x;
 
   let empty = "";
 
@@ -21,11 +19,7 @@ module Vertex = {
 
   let eq: (t, t) => bool = (==);
 
-  module Cmp =
-    Id.MakeComparable({
-      type nonrec t = t;
-      let cmp = cmp;
-    });
+  module Cmp = (val Blossom.Match.comparable(cmp));
 
   module Set = Set.String;
 };
@@ -154,7 +148,7 @@ module Mates = {
   type graph = t;
   type t = Blossom.Match.t(Vertex.t, Vertex.Cmp.identity);
 
-  let blossom = Blossom.Match.make(~id=(module Vertex.Cmp), ~cmp=Vertex.cmp);
+  let blossom = Blossom.Match.make(~id=(module Vertex.Cmp));
 
   let empty = blossom([]);
 

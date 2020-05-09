@@ -51,7 +51,7 @@ module Table = {
                    onClick={_ => editVertex(p)}
                    disabled>
                    <div className="vertical-lr">
-                     p->Graph.Vertex.toElement
+                     {p->Graph.Vertex.toString->React.string}
                    </div>
                  </button>
                </th>
@@ -67,7 +67,7 @@ module Table = {
                    className="graph-table__name-button"
                    onClick={_ => editVertex(i)}
                    disabled>
-                   i->Graph.Vertex.toElement
+                   {i->Graph.Vertex.toString->React.string}
                  </button>
                </th>
                {vertices
@@ -207,7 +207,7 @@ let make =
        </React.Fragment>
      | [|id|] =>
        <p>
-         <strong> id->Graph.Vertex.toElement </strong>
+         <strong> {id->Graph.Vertex.toString->React.string} </strong>
          " is alone. Add more people to start matching."->React.string
        </p>
      | vertices =>

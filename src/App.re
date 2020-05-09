@@ -189,6 +189,7 @@ module Credits = {
 
 module Storage = {
   open LocalForage;
+  module Id = Id.MakeEncodable(Graph);
   let graph =
     Record.make(
       Config.make(
@@ -196,7 +197,7 @@ module Storage = {
         ~storeName="blossom-playground",
         (),
       ),
-      (module Graph),
+      (module Id),
     );
 };
 

@@ -4,9 +4,7 @@ module Vertex: {
 
   let make: string => option(t);
 
-  external toString: t => string = "%identity";
-
-  external toElement: t => React.element = "%identity";
+  let toString: t => string;
 
   let empty: t;
 
@@ -60,5 +58,5 @@ module Mates: {
 
   let empty: t;
 
-  let useMates: (~cardinality:Blossom.Match.cardinality=?, graph) => t;
+  let useMates: (~cardinality: Blossom.Match.cardinality=?, graph) => t;
 };

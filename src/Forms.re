@@ -58,8 +58,7 @@ let useAutoFocus = () => {
   let focused = React.useRef(Js.Nullable.null);
   React.useEffect1(
     () => {
-      focused
-      ->React.Ref.current
+      focused.current
       ->Js.Nullable.toOption
       ->Option.flatMap(Webapi.Dom.Element.asHtmlElement)
       ->Option.map(Webapi.Dom.HtmlElement.focus)

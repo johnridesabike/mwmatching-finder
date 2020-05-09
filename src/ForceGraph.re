@@ -206,7 +206,7 @@ module SvgGraph = {
                  | NoneSelected => Color.selection
                  }
                }>
-               <title> id->Graph.Vertex.toElement </title>
+               <title> {id->Graph.Vertex.toString->React.string} </title>
              </circle>
            </g>
          )
@@ -224,16 +224,16 @@ module SvgGraph = {
        | Single(id) =>
          <InfoBox offsetX=128 offsetY=height>
            <Legend.Circle offsetY=0 fill=Color.pink stroke=Color.orange>
-             id->Graph.Vertex.toElement
+             {id->Graph.Vertex.toString->React.string}
            </Legend.Circle>
          </InfoBox>
        | Mated(id1, id2) =>
          <InfoBox offsetX=128 offsetY=height>
            <Legend.Circle offsetY=0 fill=Color.cyan stroke=Color.orange>
-             id1->Graph.Vertex.toElement
+             {id1->Graph.Vertex.toString->React.string}
            </Legend.Circle>
            <Legend.Circle offsetY=24 fill=Color.cyan stroke=Color.purple>
-             id2->Graph.Vertex.toElement
+             {id2->Graph.Vertex.toString->React.string}
            </Legend.Circle>
          </InfoBox>
        | NoneSelected => React.null

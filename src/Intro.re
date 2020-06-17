@@ -15,7 +15,7 @@ let make = (~close) => {
       ->React.string
     </p>
     <p style=Css.(style([textAlign(`center)]))>
-      <button className="font-small" onClick={_ => close()}>
+      <button className="font-small" onClick={_ => close(. )}>
         "Skip this and take me to the app."->React.string
       </button>
     </p>
@@ -176,7 +176,7 @@ let make = (~close) => {
       "."->React.string
     </p>
     <p style=Css.(style([textAlign(`center)]))>
-      <button onClick={_ => close()}> "Go to app"->React.string </button>
+      <button onClick={_ => close(. )}> "Go to app"->React.string </button>
     </p>
   </article>;
 };

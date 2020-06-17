@@ -88,10 +88,8 @@ module Table = {
                       <td
                         key={Graph.Vertex.toString(j)}
                         className=Cn.(
-                          make([
-                            "graph-table__cell",
-                            "graph-table__cell-mated"->ifTrue(mated),
-                          ])
+                          "graph-table__cell"
+                          <:> "graph-table__cell-mated"->on(mated)
                         )>
                         {switch (Graph.getEdge(graph, i, j)) {
                          | None =>
@@ -163,15 +161,15 @@ let make =
       ~mates,
       ~style=ReactDOMRe.Style.make(),
     ) => {
-  let (dialog, setDialog) = React.useState(setClosed);
-  let closeDialog = _ => setDialog(setClosed);
+  let (dialog, setDialog) = React.Uncurried.useState(setClosed);
+  let closeDialog = _ => setDialog(. setClosed);
   <div style className="graph-table-wrapper">
     <div className="toolbar">
-      <button className="toolbar__item" onClick={_ => setDialog(_ => Reset)}>
+      <button className="toolbar__item" onClick={_ => setDialog(. _ => Reset)}>
         "New graph"->React.string
       </button>
       <button
-        className="toolbar__item" onClick={_ => setDialog(_ => NewVertex)}>
+        className="toolbar__item" onClick={_ => setDialog(. _ => NewVertex)}>
         "Add vertex"->React.string
       </button>
       <label>
@@ -187,9 +185,9 @@ let make =
           }
           onChange={e =>
             if (ReactEvent.Form.currentTarget(e)##checked) {
-              setCardinality(_ => `Max);
+              setCardinality(. _ => `Max);
             } else {
-              setCardinality(_ => `NotMax);
+              setCardinality(. _ => `NotMax);
             }
           }
         />
@@ -200,7 +198,7 @@ let make =
        <React.Fragment>
          <p> "No one to match. Add someone to begin."->React.string </p>
          <p>
-           <button onClick={_ => dispatch(Graph.Set(SampleData.a))}>
+           <button onClick={_ => dispatch(. Graph.Set(SampleData.a))}>
              "Load a sample graph"->React.string
            </button>
          </p>
@@ -216,8 +214,8 @@ let make =
            vertices
            mates
            graph
-           editVertex={p => setDialog(_ => EditingVertex(p))}
-           editEdge={(i, j, w) => setDialog(_ => EditingEdge(i, j, w))}
+           editVertex={p => setDialog(. _ => EditingVertex(p))}
+           editEdge={(i, j, w) => setDialog(. _ => EditingEdge(i, j, w))}
          />
          {switch (Graph.edgeCount(graph)) {
           | 0 =>
@@ -260,7 +258,7 @@ let make =
            <button
              className="dialog__button-delete"
              onClick={_ => {
-               dispatch(Graph.Set(SampleData.a));
+               dispatch(. Graph.Set(SampleData.a));
                closeDialog();
              }}>
              "Reset to sample data"->React.string
@@ -270,7 +268,7 @@ let make =
            <button
              className="dialog__button-delete"
              onClick={_ => {
-               dispatch(Graph.Set(Graph.empty));
+               dispatch(. Graph.Set(Graph.empty));
                closeDialog();
              }}>
              "Reset to blank data"->React.string

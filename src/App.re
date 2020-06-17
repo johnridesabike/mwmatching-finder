@@ -5,20 +5,20 @@ module Toggleable = {
 
   [@react.component]
   let make = (~title, ~children, ~default=Open) => {
-    let (toggle, setToggle) = React.useState(() => default);
+    let (toggle, setToggle) = React.Uncurried.useState(() => default);
     <div className="how-to">
       <h2>
         {switch (toggle) {
          | Open =>
            <button
-             className="button-ghost" onClick={_ => setToggle(_ => Closed)}>
+             className="button-ghost" onClick={_ => setToggle(. _ => Closed)}>
              title->React.string
              " "->React.string
              <Icons.ChevronDown className="icon" />
            </button>
          | Closed =>
            <button
-             className="button-ghost" onClick={_ => setToggle(_ => Open)}>
+             className="button-ghost" onClick={_ => setToggle(. _ => Open)}>
              title->React.string
              " "->React.string
              <Icons.ChevronLeft className="icon" />
@@ -204,7 +204,7 @@ module Storage = {
 module Main = {
   [@react.component]
   let make = (~graph, ~setShowIntro) => {
-    let (graph, dispatch) = React.useReducer(Graph.reducer, graph);
+    let (graph, dispatch) = React.Uncurried.useReducer(Graph.reducer, graph);
     React.useEffect1(
       () => {
         LocalForage.Record.set(Storage.graph, ~items=graph)->ignore;
@@ -213,12 +213,13 @@ module Main = {
       [|graph|],
     );
     let vertices = Graph.verticesToArray(graph);
-    let (cardinality, setCardinality) = React.useState(() => `NotMax);
+    let (cardinality, setCardinality) =
+      React.Uncurried.useState(() => `NotMax);
     let mates = Graph.Mates.useMates(graph, ~cardinality);
     <main role="main" className="main">
       <h1> {j|Maximum Weighted Matching Finder|j}->React.string </h1>
       <p style=Css.(style([textAlign(`center)]))>
-        <button className="show-intro" onClick={_ => setShowIntro(_ => true)}>
+        <button className="show-intro" onClick={_ => setShowIntro(. _ => true)}>
           "Show introduction"->React.string
         </button>
       </p>
@@ -265,16 +266,16 @@ type loaded('a) =
 
 [@react.component]
 let make = () => {
-  let (loaded, setLoaded) = React.useState(() => Loading);
-  let (showIntro, setShowIntro) = React.useState(() => false);
+  let (loaded, setLoaded) = React.Uncurried.useState(() => Loading);
+  let (showIntro, setShowIntro) = React.Uncurried.useState(() => false);
   React.useEffect0(() => {
     LocalForage.Record.get(Storage.graph)
     ->Promise.Js.fromBsPromise
     ->Promise.Js.toResult
-    ->Promise.tapOk(graph => setLoaded(_ => Loaded(graph)))
+    ->Promise.tapOk(graph => setLoaded(. _ => Loaded(graph)))
     ->Promise.tapError(_ => {
-        setLoaded(_ => Loaded(SampleData.a));
-        setShowIntro(_ => true);
+        setLoaded(. _ => Loaded(SampleData.a));
+        setShowIntro(. _ => true);
       })
     ->ignore;
     None;
@@ -289,8 +290,8 @@ let make = () => {
        | true =>
          <Dialog
            ariaLabel="Introduction to maximum weighted matching "
-           onDismiss={() => setShowIntro(_ => false)}>
-           <Intro close={() => setShowIntro(_ => false)} />
+           onDismiss={() => setShowIntro(. _ => false)}>
+           <Intro close={(. ) => setShowIntro(. _ => false)} />
          </Dialog>
        }}
     </React.Fragment>

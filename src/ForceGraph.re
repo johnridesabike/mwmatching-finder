@@ -136,7 +136,7 @@ module SvgGraph = {
   let make =
       (~height, ~width as widthInt, ~links, ~nodes, ~gutterSize, ~legend) => {
     let (selected, setSelected) =
-      React.useReducer(selectionReducer, NoneSelected);
+      React.Uncurried.useReducer(selectionReducer, NoneSelected);
 
     let totalHeight = height + gutterSize |> Js.String.make;
     let height = height->Js.String.make;
@@ -156,7 +156,7 @@ module SvgGraph = {
         width
         height
         fill=Color.background
-        onTouchStart={_ => setSelected(Unselect)}
+        onTouchStart={_ => setSelected(. Unselect)}
       />
       <g className="graph-links">
         {Array.map(
@@ -187,10 +187,10 @@ module SvgGraph = {
         {Array.map(nodes, (Node.{x, y, data: {nodeColor, id, mate}, _}) =>
            <g
              key={Graph.Vertex.toString(id)}
-             onMouseOver={_ => setSelected(Select({vertex: id, mate}))}
-             onTouchStart={_ => setSelected(Select({vertex: id, mate}))}
-             onClick={_ => setSelected(Select({vertex: id, mate}))}
-             onMouseLeave={_ => setSelected(Unselect)}>
+             onMouseOver={_ => setSelected(. Select({vertex: id, mate}))}
+             onTouchStart={_ => setSelected(. Select({vertex: id, mate}))}
+             onClick={_ => setSelected(. Select({vertex: id, mate}))}
+             onMouseLeave={_ => setSelected(. Unselect)}>
              <circle
                transform={j|translate($x, $y)|j}
                r=circleRadius

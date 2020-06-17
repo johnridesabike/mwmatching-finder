@@ -153,10 +153,11 @@ module Mates = {
   let empty = blossom([]);
 
   let useMates = (~cardinality=`NotMax, graph) => {
-    let (matches, setMatches) = React.useState(() => graph->toList->blossom);
+    let (matches, setMatches) =
+      React.Uncurried.useState(() => graph->toList->blossom);
     React.useEffect2(
       () => {
-        setMatches(state =>
+        setMatches(. state =>
           switch (graph->toList->(blossom(~cardinality))) {
           | exception e =>
             Js.Console.error(e);

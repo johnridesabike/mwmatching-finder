@@ -58,7 +58,7 @@ let useAutoFocus = () => {
   let focused = React.useRef(Js.Nullable.null);
   React.useEffect1(
     () => {
-      focused.current
+      focused.React.current
       ->Js.Nullable.toOption
       ->Option.flatMap(Webapi.Dom.Element.asHtmlElement)
       ->Option.map(Webapi.Dom.HtmlElement.focus)
@@ -85,9 +85,9 @@ module VertexEditor = {
         },
         ~onSubmit=({name, delete, oldName, _}, form) => {
           if (delete) {
-            dispatch(Graph.RemoveVertex(name));
+            dispatch(. Graph.RemoveVertex(name));
           } else {
-            dispatch(Graph.RenameVertex({old: oldName, new_: name}));
+            dispatch(. Graph.RenameVertex({old: oldName, new_: name}));
           };
           onSubmit();
           form.Formality.notifyOnSuccess(None);
@@ -138,9 +138,7 @@ module VertexEditor = {
       </p>
       <button
         disabled={form.submitting}
-        className=Cn.(
-          make(["dialog__button-delete"->ifTrue(form.input.delete)])
-        )>
+        className=Cn.("dialog__button-delete"->on(form.input.delete))>
         {switch (form) {
          | {submitting: true, _} => "Submitting..."
          | {input: {delete: true, _}, _} => "Delete"
@@ -171,7 +169,7 @@ module VertexAdder = {
           existingNames: names,
         },
         ~onSubmit=({name, _}, form) => {
-          dispatch(Graph.AddVertex(name));
+          dispatch(. Graph.AddVertex(name));
           onSubmit();
           form.Formality.notifyOnSuccess(None);
           form.Formality.reset();
@@ -222,9 +220,9 @@ module EdgeSetter = {
         ~initialInput={weight: Js.String.make(weight), delete: false},
         ~onSubmit=({weight, delete}, form) => {
           if (delete) {
-            dispatch(Graph.RemoveEdge(i, j));
+            dispatch(. Graph.RemoveEdge(i, j));
           } else {
-            dispatch(Graph.SetEdge(i, j, weight));
+            dispatch(. Graph.SetEdge(i, j, weight));
           };
           form.Formality.notifyOnSuccess(None);
           form.Formality.reset();
@@ -279,9 +277,7 @@ module EdgeSetter = {
       </p>
       <button
         disabled={form.submitting}
-        className=Cn.(
-          make(["dialog__button-delete"->ifTrue(form.input.delete)])
-        )>
+        className=Cn.("dialog__button-delete"->on(form.input.delete))>
         {switch (form) {
          | {submitting: true, _} => "Submitting..."
          | {input: {delete: true, _}, _} => "Delete"

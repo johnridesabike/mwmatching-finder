@@ -1,2 +1,2 @@
 [@react.component]
-let make: (~close: unit => unit) => React.element;
+let make: (~close: (. unit) => unit) => React.element;

@@ -18,11 +18,11 @@ let make:
   (
     ~vertices: array(Graph.Vertex.t),
     ~graph: Graph.t,
-    ~dispatch: Graph.action => unit,
+    ~dispatch: (. Graph.action) => unit,
     ~cardinality: Blossom.Match.cardinality,
-    ~setCardinality: (
-                       Blossom.Match.cardinality => Blossom.Match.cardinality
-                     ) =>
+    ~setCardinality: (. (
+                          Blossom.Match.cardinality => Blossom.Match.cardinality
+                        )) =>
                      unit,
     ~mates: Blossom.Match.t(Graph.Vertex.t, Graph.Vertex.Cmp.identity),
     ~style: ReactDOMRe.Style.t=?

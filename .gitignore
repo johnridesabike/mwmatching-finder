@@ -6,3 +6,5 @@ lib/
 .cache/
 dist/
 *.bs.js
+_esy/
+.bsb.lock
